@@ -1,0 +1,23 @@
+[package]
+name = "bitman"
+version = "1.0.0"
+authors = ["Eric Evans (CireSnave@gmail.com)"]
+edition = "2021"
+rust-version = "1.61"
+description = "An easy to use bit manipulation library for Rust"
+documentation = "https://github.com/ciresnave/bitman"
+readme = "README.md"
+homepage = "https://github.com/ciresnave/bitman"
+repository = "https://github.com/ciresnave/bitman"
+license = "MIT"
+license-url = "https://github.com/ciresnave/bitman/LICENSE"
+keywords = ["bitfield", "bit", "bits", "byte", "binary"]
+categories = ["data-structures", "encoding", "no-std", "parsing"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+
+[dependencies.num-traits]
+version = "^0.2"
+default-features = false
