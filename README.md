@@ -4,7 +4,7 @@
 
 ## Overview
 
-Rust's primitive integers are mad of bits under the hood.  Unfortunately, Rust
+Rust's primitive integers are made of bits under the hood.  Unfortunately, Rust
 doesn't provide much tooling to manipulate those bits.  What's more, Rust has
 no tools to create slices of some of the bits from an integer to allow
 manipulation of sub-fields.
