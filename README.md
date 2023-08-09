@@ -4,16 +4,15 @@
 
 ## Overview
 
-Rust's primitive integers are mad of bits under the hood.  Unfortunately, Rust
-doesn't provide much tooling to manipulate those bits.  What's more, Rust has
-no tools to create slices of some of the bits from an integer to allow
-manipulation of sub-fields.
+*bitman* provides a way to read and write the individual bits of your variables
+as well as the ability to define fields within your Bits that can be read or
+written as any type you choose.
 
-What's the solution? *bitman*!  
+## Project Vision
 
-*bitman* provides a way to read and write the individual bits of primitive
-types as well as the ability to overwrite sections of those bits with
-values from a variety of types.
+Our vision for *bitman* is a set of simple, intuitive tools to allow efficient
+interactions with the underlying bits and subfields of types that normally do
+not provide that access.
 
 ## Usage
 
