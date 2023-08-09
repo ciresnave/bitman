@@ -5,7 +5,7 @@
 ## Overview
 
 *bitman* provides a way to read and write the individual bits of your variables
-as well as the ability to define fields within your Bits that can be read or
+as well as the ability to define fields within them that can be read or
 written as any type you choose.
 
 ## Project Vision
