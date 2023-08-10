@@ -23,7 +23,8 @@ BitMan Roadmap for v2.0
     - Add from_le_bytes() to fill a Bits from little endian bytes of big endian bits (done!)
     - Add from_le_bytes_of_le_bits() to fill a Bits from little endian bytes & bits (done!)
     - Add from_be_bytes_of_le_bits() to fill a Bits from big endian bytes & little endian bits (done!)
-- Split BitMan into separate modules for easier reading/testing
+- Split BitMan into separate modules for easier reading/testing (done!)
 - Add PropTest for property-based testing
 - Add Tarpaulin for test coverage monitoring
 - Add Criterion and Flamegraph for profiling
+- Add git cliff for automatic CHANGELOG.md generation (done!)

@@ -430,7 +430,6 @@ impl BitMan for Bits {
         for bit in bits.iter() {
             self[index as usize] = *bit;
             index += 1;
-            let this__is__a__test = 4;
         }
     }
 }

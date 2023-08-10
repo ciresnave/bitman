@@ -246,8 +246,8 @@ impl BitMan for Bit {
     }
 
     #[inline]
-    default fn set_bit(&mut self, index: &u32, bit: &Bit) {
-        self.set_bit(index, bit);
+    default fn set_bit(&mut self, _index: &u32, bit: &Bit) {
+        self.0 = bit.0;
     }
 
     #[inline]
@@ -258,6 +258,6 @@ impl BitMan for Bit {
     #[inline]
     default fn set_bits(&mut self, index: u32, bits: &Bits) {
         assert_eq!(index, 0);
-        self.set_bit(&index, &bits[0]);
+        self.0 = bits.get(&bits.len() - 1).unwrap().0;
     }
 }
