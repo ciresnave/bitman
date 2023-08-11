@@ -46,6 +46,13 @@ Of course, you can assign from slices of Bits to slices of Bits as well!
 
     my_bits[2..4].copy_from_slice(my_bits[0..2]);
 
+## Developer Information
+
+Automated Tooling
+-----------------
+
+We automatically run git cliff on every commit using a git hook to generate a CHANGELOG.md file. This ensures the changelog stays up-to-date as we develop.
+
 ## Roadmap
 
 Multithreading

@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 - Minor update to README.md
 - Update README.md
 - Updated README.md to sound less anti-Rust
+- Corrected minor documentation issues
 
 ### Miscellaneous Tasks
 
