@@ -52,6 +52,7 @@ Automated Tooling
 -----------------
 
 We automatically run git cliff on every commit using a git hook to generate a CHANGELOG.md file. This ensures the changelog stays up-to-date as we develop.
+We have added a git hook to kick off git cliff on every commit.  See .git/hooks/post-commit for the hook code.
 
 ## Roadmap
 

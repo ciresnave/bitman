@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 - Update README.md
 - Updated README.md to sound less anti-Rust
 - Corrected minor documentation issues
+- Added note to README.md about automated git cliff
 
 ### Miscellaneous Tasks
 
