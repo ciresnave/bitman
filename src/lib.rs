@@ -60,8 +60,7 @@ where
             );
         }
         mask = self.to_owned() & mask;
-        let return_value = Bit(mask != Self::zero());
-        return_value
+        Bit(mask != Self::zero())
     }
 
     #[inline]

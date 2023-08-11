@@ -447,7 +447,7 @@ macro_rules! impl_to_and_from_bits {
         impl From<&Bits> for $new_type {
             #[inline]
             fn from(bits_to_convert: &Bits) -> $new_type {
-                if bits_to_convert.bit_len() > size_of::<$new_type>() * 8 {
+                #[allow(clippy::manual_bits)] if bits_to_convert.bit_len() > size_of::<$new_type>() * 8 {
                     let shortened_bits: Bits = Bits{
                         inner: bits_to_convert.get((bits_to_convert.inner.len() - size_of::<$new_type>())..bits_to_convert.inner.len()).unwrap()
                             .to_vec()
