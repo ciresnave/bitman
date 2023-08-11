@@ -17,7 +17,7 @@ of the project aren't engaged to assist in planning and development.  Without
 constructive criticism, a lot of work is either duplicated or effort is
 expended toward non-goals or toward progress down sub-optimal paths.
 
-The corrolary is that dismissive comments, dissent against discussion, and
+The corollary is that dismissive comments, dissent against discussion, and
 unconstructive criticism are all strongly discouraged.  Someone who feels their
 thoughts are being dismissed without due consideration will be much less likely
 to continue to share their thoughts and thus they will be less engaged in

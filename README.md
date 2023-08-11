@@ -1,37 +1,32 @@
-# **<center>*bitman*</center>**
+# **<center>*bitman*</center>** 
+
+<center><img src="generic-superhero.svg" width="20%"></center>
+
 
 *<center>rips all of your primitive integers to bits</center>*
 
 ## Overview
 
-*bitman* provides a way to read and write the individual bits of your variables
-as well as the ability to define fields within them that can be read or
-written as any type you choose.
+*bitman* provides a way to read and write the individual bits of your variables as well as the ability to define fields within your variable that can be read or written as any type you choose.
 
 ## Project Vision
 
-Our vision for *bitman* is a set of simple, intuitive tools to allow efficient
-interactions with the underlying bits and subfields of types that normally do
-not provide that access.
+Our vision for *bitman* is a set of simple, intuitive tools to allow efficient interactions with the underlying bits and subfields of types that normally do not provide that access.
 
 ## Usage
 
 *bitman* is designed to be as easy to use as possible without sacrificing
 speed.  To make that happen, we added a to_bits() method to all of Rust's
-primitive integers.  Let's take a look at how creating a Bits works by looking
-at a u8 named my_u8:
+primitive integers.  Let's take a look at how creating a Bits works by looking at a u8 named my_u8:
 
 - my_u8.to_bits() takes the u8 and returns a Bits type.  Bits creates a wrapper
-  around the u8 with more methods available.  As such, the my_u8.to_bits() call
-  is pretty low cost initially.  It simply copies the u8 into the Bits type.
+  around the u8 with more methods available.  As such, the my_u8.to_bits() call is pretty low cost initially.  It simply copies the u8 into the Bits type.
   <center>(Note: for more expressive errors, try to_named_bits())</center>
+  
 - my_u8.to_bits() also extracts a vec\<bool> from the internal u8.  The
-  resulting vec\<bool> is then stored in the Bits variable to aid in faster bit
-  retrieval. (NOTE: Currently, this optimization is disabled.  I'm working out
-  bugs in the threading code that were causing a race condition.)
+  resulting vec\<bool> is then stored in the Bits variable to aid in faster bit retrieval. (NOTE: Currently, this optimization is disabled.  I'm working out bugs in the threading code that were causing a race condition.  Code using this will still work fine but won't be as fast as it will be once the optimization is re-enabled.)
 
-Writing to or reading from bits in a Bits is done with an index.  I'll create a
-Bits instance from a u8 to demonstrate:
+Writing to or reading from bits in a Bits is done with an index.  I'll create a Bits instance from a u8 to demonstrate:
 
     use bitman::AnyIntegerType;
     let mut my_u8 = 0u8;
