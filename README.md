@@ -3,7 +3,7 @@
 <p align="center"><img src="generic-superhero.svg" width="20%"></p>
 
 
-*<p align="center">rips all of your primitive integers to bits</p>*
+*<p align="center">rips your variables to bits</p>*
 
 ## Overview
 
