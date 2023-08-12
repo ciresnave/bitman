@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 - Corrected minor documentation issues
 - Added note to README.md about automated git cliff
 - Added note about post-commit hook to README.md
+- Added iterable info to README.md
 
 ### Miscellaneous Tasks
 
