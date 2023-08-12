@@ -1,9 +1,9 @@
-# **<center>*bitman*</center>** 
+# **<p align="center">*bitman*</p>** 
 
-<center><img src="generic-superhero.svg" width="20%"></center>
+<p align="center"><img src="generic-superhero.svg" width="20%"></p>
 
 
-*<center>rips all of your primitive integers to bits</center>*
+*<p align="center">rips all of your primitive integers to bits</p>*
 
 ## Overview
 
@@ -21,30 +21,52 @@ primitive integers.  Let's take a look at how creating a Bits works by looking a
 
 - my_u8.to_bits() takes the u8 and returns a Bits type.  Bits creates a wrapper
   around the u8 with more methods available.  As such, the my_u8.to_bits() call is pretty low cost initially.  It simply copies the u8 into the Bits type.
-  <center>(Note: for more expressive errors, try to_named_bits())</center>
+  <p align="center">(Note: for more expressive errors, try to_named_bits())</p>
   
 - my_u8.to_bits() also extracts a vec\<bool> from the internal u8.  The
   resulting vec\<bool> is then stored in the Bits variable to aid in faster bit retrieval. (NOTE: Currently, this optimization is disabled.  I'm working out bugs in the threading code that were causing a race condition.  Code using this will still work fine but won't be as fast as it will be once the optimization is re-enabled.)
 
 Writing to or reading from bits in a Bits is done with an index.  I'll create a Bits instance from a u8 to demonstrate:
 
-    use bitman::AnyIntegerType;
-    let mut my_u8 = 0u8;
-    let mut my_bits = my_u8.to_bits();      // to_bits() makes it easy to make a Bits.
-    my_bits[0] = true;                      // Setting a bit is easy as pie.
-    assert_eq!(my_bits[0], true);           // Reading a single bit is easy too!
-    assert_eq!(my_bits.as_integer(), 128);  // Need to read the integer?  Easy peasy!
+```rust
+use bitman::AnyIntegerType;
+let mut my_u8 = 0u8;
+let mut my_bits = my_u8.to_bits();      // to_bits() makes it easy to make a Bits.
+my_bits[0] = true;                      // Setting a bit is easy as pie.
+assert_eq!(my_bits[0], true);           // Reading a single bit is easy too!
+assert_eq!(my_bits.as_integer(), 128);  // Need to read the integer?  Easy peasy!
+```
 
 It really is that simple!
 
 You can even assign from slices of bools to slices from Bits and it just works
 without affecting any other bits!
 
-    my_bits[0..2].copy_from_slice(&[true, false]);
+```rust
+my_bits[0..2].copy_from_slice(&[true, false]);
+```
 
 Of course, you can assign from slices of Bits to slices of Bits as well!
 
-    my_bits[2..4].copy_from_slice(my_bits[0..2]);
+```rust
+my_bits[2..4].copy_from_slice(my_bits[0..2]);
+```
+
+Bits types are also iterable, so you can easily iterate over each Bit within a Bits:
+
+```rust
+for bit in my_bits {
+  println!("{:?}", bit);
+}
+```
+
+Of course, you can also iterate over the Bits mutably if you need to:
+
+```rust
+for mut bit in my_bits {
+  bit = !bit;
+}
+```
 
 ## Developer Information
 
