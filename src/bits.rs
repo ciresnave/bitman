@@ -351,6 +351,7 @@ impl Shr<u32> for Bits {
 }
 
 impl CheckedShl for Bits {
+    #[inline]
     fn checked_shl(&self, rhs: u32) -> Option<Self> {
         if rhs > self.bit_len() as u32 {
             None
@@ -406,6 +407,7 @@ impl Mul for Bits {
 }
 
 impl BitMan for Bits {
+    #[inline]
     fn bit_len(&self) -> usize {
         (*self).len()
     }
