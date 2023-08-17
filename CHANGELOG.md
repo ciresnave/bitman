@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Bug Fixes
 
 - Repaired corrupted README.md
+- Updated dependency versions
 
 ### Documentation
 
