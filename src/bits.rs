@@ -18,7 +18,7 @@ use alloc::vec;
 use alloc::vec::Vec;
 use num_traits::{CheckedShl, One, Zero};
 
-use crate::bit::*;
+use crate::bit::Bit;
 use crate::BitMan;
 
 #[cfg(test)]
@@ -31,14 +31,14 @@ pub struct Bits {
 
 impl Bits {
     #[inline]
-    pub fn new(inner_vector_of_bits: &[Bit]) -> Bits {
-        Bits {
+    #[must_use] pub fn new(inner_vector_of_bits: &[Bit]) -> Self {
+        return Self {
             inner: inner_vector_of_bits.to_owned(),
         }
     }
 
     #[inline]
-    pub fn to_be_bytes(&self) -> Vec<u8> {
+    #[must_use] pub fn to_be_bytes(&self) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
         let length = self.len();
         let mut current_length = 0usize;
@@ -47,7 +47,7 @@ impl Bits {
             for (count, bit) in self.inner.iter().enumerate() {
                 bits.push(*bit);
                 if count % 8 == 0 {
-                    bytes.push(u8::from(&Bits::new(&bits)));
+                    bytes.push(u8::from(&Self::new(&bits)));
                     current_length += 8;
                 }
             }
@@ -59,19 +59,19 @@ impl Bits {
     }
 
     #[inline]
-    pub fn to_le_bytes(&self) -> Vec<u8> {
+    #[must_use] pub fn to_le_bytes(&self) -> Vec<u8> {
         self.to_be_bytes().into_iter().rev().collect()
     }
 
     #[inline]
-    pub fn to_le_bytes_of_le_bits(&self) -> Vec<u8> {
+    #[must_use] pub fn to_le_bytes_of_le_bits(&self) -> Vec<u8> {
         let mut vec_u8 = self.to_be_bytes_of_le_bits();
         vec_u8.reverse();
         vec_u8
     }
 
     #[inline]
-    pub fn to_be_bytes_of_le_bits(&self) -> Vec<u8> {
+    #[must_use] pub fn to_be_bytes_of_le_bits(&self) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
         let length = self.len();
         let mut current_length = 0usize;
@@ -84,7 +84,7 @@ impl Bits {
                     break;
                 }
             }
-            bytes.push(u8::from(&Bits::new(&bits)));
+            bytes.push(u8::from(&Self::new(&bits)));
             current_length += 8;
             if current_length >= length {
                 break;
@@ -94,8 +94,8 @@ impl Bits {
     }
 
     #[inline]
-    pub fn from_be_bytes(slice_of_bytes: &[u8]) -> Bits {
-        let mut bits = Bits::new(&[]);
+    #[must_use] pub fn from_be_bytes(slice_of_bytes: &[u8]) -> Self {
+        let mut bits = Self::new(&[]);
         for current_u8 in slice_of_bytes {
             bits.append(&mut current_u8.bits().inner);
         }
@@ -103,27 +103,27 @@ impl Bits {
     }
 
     #[inline]
-    pub fn from_le_bytes(slice_of_bytes: &[u8]) -> Bits {
+    #[must_use] pub fn from_le_bytes(slice_of_bytes: &[u8]) -> Self {
         let mut vec_of_bytes: Vec<u8> = Vec::from(slice_of_bytes);
         vec_of_bytes.reverse();
-        Bits::from_be_bytes(&vec_of_bytes)
+        return Self::from_be_bytes(&vec_of_bytes)
     }
 
     #[inline]
-    pub fn from_le_bytes_of_le_bits(slice_of_bytes: &[u8]) -> Bits {
+    #[must_use] pub fn from_le_bytes_of_le_bits(slice_of_bytes: &[u8]) -> Self {
         let mut vec_of_bytes: Vec<u8> = Vec::from(slice_of_bytes);
         vec_of_bytes.reverse();
-        Bits::from_be_bytes_of_le_bits(&mut vec_of_bytes)
+        return Self::from_be_bytes_of_le_bits(&mut vec_of_bytes)
     }
 
     #[inline]
-    pub fn from_be_bytes_of_le_bits(slice_of_bytes: &mut [u8]) -> Bits {
+    pub fn from_be_bytes_of_le_bits(slice_of_bytes: &mut [u8]) -> Self {
         let mut vec_of_bits: Vec<Bit> = Vec::new();
         for current_u8 in slice_of_bytes {
-            let mut current_u8_as_bits: Bits = Bits::new(&Bits::from(*current_u8).inner);
+            let mut current_u8_as_bits: Self = Self::new(&Self::from(*current_u8).inner);
             vec_of_bits.append(&mut current_u8_as_bits);
         }
-        Bits::new(&Vec::new())
+        return Self::new(&Vec::new())
     }
 }
 
@@ -149,19 +149,19 @@ impl Display for Bits {
         let mut output = String::new();
         let mut index_counter = 0usize;
         while let Some(bit) = self.get(index_counter) {
-            output = format!("{} {:?}", output, bit);
+            output = format!("{output} {bit:?}");
             index_counter += 1;
         }
-        write!(formatter, "Bits({})", output)
+        return write!(formatter, "Bits({output})")
     }
 }
 
 impl BitAnd for Bits {
-    type Output = Bits;
+    type Output = Self;
 
     #[inline]
-    fn bitand(self, rhs: Bits) -> Bits {
-        let mut new_bits = Bits { inner: Vec::new() };
+    fn bitand(self, rhs: Self) -> Self {
+        let mut new_bits = Self { inner: Vec::new() };
         let mut index_counter = 0usize;
         while let Some(bit_from_self) = self.get(index_counter) {
             if let Some(bit_from_rhs) = rhs.get(index_counter) {
@@ -177,7 +177,7 @@ impl BitAnd for Bits {
 
 impl BitAndAssign for Bits {
     #[inline]
-    fn bitand_assign(&mut self, rhs: Bits) {
+    fn bitand_assign(&mut self, rhs: Self) {
         let mut index_counter = 0usize;
         let old_self = self.clone();
         while let Some(bit_from_self) = old_self.get(index_counter) {
@@ -195,8 +195,8 @@ impl BitOr for Bits {
     type Output = Self;
 
     #[inline]
-    fn bitor(self, rhs: Bits) -> Bits {
-        let mut new_bits = Bits { inner: Vec::new() };
+    fn bitor(self, rhs: Self) -> Self {
+        let mut new_bits = Self { inner: Vec::new() };
         let mut index_counter = 0usize;
         while let Some(bit_from_self) = self.get(index_counter) {
             if let Some(bit_from_rhs) = rhs.get(index_counter) {
@@ -225,8 +225,8 @@ impl BitXor for Bits {
     type Output = Self;
 
     #[inline]
-    fn bitxor(self, rhs: Bits) -> Bits {
-        let mut new_bits = Bits { inner: Vec::new() };
+    fn bitxor(self, rhs: Self) -> Self {
+        let mut new_bits = Self { inner: Vec::new() };
         let mut index_counter = 0usize;
         while let Some(bit_from_self) = self.get(index_counter) {
             if let Some(bit_from_rhs) = rhs.get(index_counter) {
@@ -259,7 +259,7 @@ where
 
     #[inline]
     fn index(&self, index: Idx) -> &Self::Output {
-        self.get(index).unwrap()
+        return self.get(index).unwrap()
     }
 }
 
@@ -269,7 +269,7 @@ where
 {
     #[inline]
     fn index_mut(&mut self, index: Idx) -> &mut Self::Output {
-        self.get_mut(index).unwrap()
+        return self.get_mut(index).unwrap()
     }
 }
 
@@ -278,7 +278,7 @@ impl Not for Bits {
 
     #[inline]
     fn not(self) -> Self::Output {
-        let mut new_bits = Bits { inner: Vec::new() };
+        let mut new_bits = Self { inner: Vec::new() };
         for index in 0..self.len() {
             if self.get(index).unwrap().0 {
                 new_bits.push(Bit(true));
@@ -294,7 +294,7 @@ impl Shl<u32> for &Bits {
     type Output = Bits;
 
     fn shl(self, rhs: u32) -> Self::Output {
-        self.to_owned() << rhs
+        return self.clone() << rhs
     }
 }
 
@@ -302,7 +302,7 @@ impl Shl<usize> for Bits {
     type Output = Self;
 
     #[inline]
-    fn shl(mut self, rhs: usize) -> Bits {
+    fn shl(mut self, rhs: usize) -> Self {
         drop(self.drain(..rhs));
         for _ in 0..rhs {
             self.push(Bit(false));
@@ -315,7 +315,7 @@ impl Shl<u32> for Bits {
     type Output = Self;
 
     #[inline]
-    fn shl(mut self, rhs: u32) -> Bits {
+    fn shl(mut self, rhs: u32) -> Self {
         drop(self.drain(..rhs as usize));
         for _ in 0..rhs {
             self.push(Bit(false));
@@ -325,7 +325,7 @@ impl Shl<u32> for Bits {
 }
 
 impl Shr<usize> for Bits {
-    type Output = Bits;
+    type Output = Self;
 
     #[inline]
     fn shr(mut self, rhs: usize) -> Self::Output {
@@ -338,7 +338,7 @@ impl Shr<usize> for Bits {
 }
 
 impl Shr<u32> for Bits {
-    type Output = Bits;
+    type Output = Self;
 
     #[inline]
     fn shr(mut self, rhs: u32) -> Self::Output {
@@ -364,7 +364,7 @@ impl CheckedShl for Bits {
 impl Zero for Bits {
     #[inline]
     fn zero() -> Self {
-        Bits::new(&vec![Bit(false); size_of::<Self>() * 8])
+        return Self::new(&vec![Bit(false); size_of::<Self>() * 8])
     }
 
     #[inline]
@@ -376,7 +376,7 @@ impl Zero for Bits {
 impl One for Bits {
     #[inline]
     fn one() -> Self {
-        let mut output = Bits::new(&vec![Bit(false); size_of::<Self>() * 8]);
+        let mut output = Self::new(&vec![Bit(false); size_of::<Self>() * 8]);
         output.set_bit(&((size_of::<Self>()) as u32 * 7), &Bit(true));
         output
     }
@@ -397,7 +397,7 @@ impl One for Bits {
 }
 
 impl Mul for Bits {
-    type Output = Bits;
+    type Output = Self;
 
     #[inline]
     fn mul(self, rhs: Self) -> Self::Output {
@@ -483,10 +483,10 @@ macro_rules! impl_to_and_from_bits {
 impl_to_and_from_bits!(u8, u16, u32, u64, u128, usize, Bit);
 
 impl Add for Bits {
-    type Output = Bits;
+    type Output = Self;
 
     #[inline]
-    fn add(self, rhs: Bits) -> Self::Output {
+    fn add(self, rhs: Self) -> Self::Output {
         let mut output_value: Self::Output = Default::default();
         let mut carry = false;
         for index in self.inner.len()..0 {

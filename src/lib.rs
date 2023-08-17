@@ -2,6 +2,13 @@
 //!
 //! The *Bit* and *Bits* structures are the heart of *bitman*.
 //!
+#![warn(
+    clippy::all,
+    clippy::restriction,
+    clippy::pedantic,
+    clippy::nursery,
+    clippy::cargo
+)]
 #![allow(incomplete_features)]
 #![feature(specialization)]
 #![cfg_attr(not(test), no_std)]
@@ -65,9 +72,7 @@ where
 
     #[inline]
     fn set_bit(&mut self, index: &u32, bit: &Bit) {
-        if *index > ((self.bit_len()) - 1).try_into().unwrap() {
-            panic!("Index out of range in call to set_bit()");
-        }
+        assert!(*index <= ((self.bit_len()) - 1).try_into().unwrap(), "Index out of range in call to set_bit()");
         if **bit {
             let mut mask: Self = Self::one();
             if let Some(new_mask) = mask.checked_shl((self.bit_len() as u32 - 1) - index) {

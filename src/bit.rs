@@ -38,24 +38,24 @@ impl Display for Bit {
 }
 
 impl BitAnd for Bit {
-    type Output = Bit;
+    type Output = Self;
 
-    fn bitand(self, rhs: Bit) -> Bit {
-        Bit(self.0 & rhs.0)
+    fn bitand(self, rhs: Self) -> Self {
+        return Self(self.0 & rhs.0)
     }
 }
 
 impl BitAndAssign for Bit {
-    fn bitand_assign(&mut self, rhs: Bit) {
+    fn bitand_assign(&mut self, rhs: Self) {
         self.0 &= rhs.0;
     }
 }
 
 impl BitOr for Bit {
-    type Output = Bit;
+    type Output = Self;
 
-    fn bitor(self, rhs: Bit) -> Bit {
-        Bit(self.0 | rhs.0)
+    fn bitor(self, rhs: Self) -> Self {
+        return Self(self.0 | rhs.0)
     }
 }
 
@@ -68,11 +68,11 @@ impl BitOrAssign for Bit {
 impl BitXor for Bit {
     type Output = Self;
 
-    fn bitxor(self, rhs: Bit) -> Bit {
+    fn bitxor(self, rhs: Self) -> Self {
         if self.0 {
-            Bit(!(rhs.0))
+            return Self(!(rhs.0))
         } else {
-            Bit(rhs.0)
+            return Self(rhs.0)
         }
     }
 }
@@ -91,18 +91,18 @@ impl Not for Bit {
     type Output = Self;
 
     fn not(self) -> Self::Output {
-        Bit(!self.0)
+        return Self(!self.0)
     }
 }
 
 impl Shl<usize> for Bit {
-    type Output = Bit;
+    type Output = Self;
 
     fn shl(self, rhs: usize) -> Self::Output {
         if rhs == 0 {
             return self;
         }
-        Bit(false)
+        return Self(false)
     }
 }
 
@@ -115,13 +115,13 @@ impl ShlAssign<usize> for Bit {
 }
 
 impl Shl<u32> for Bit {
-    type Output = Bit;
+    type Output = Self;
 
     fn shl(self, rhs: u32) -> Self::Output {
         if rhs == 0 {
             return self;
         }
-        Bit(false)
+        return Self(false)
     }
 }
 
@@ -144,13 +144,13 @@ impl CheckedShl for Bit {
 }
 
 impl Shr<usize> for Bit {
-    type Output = Bit;
+    type Output = Self;
 
     fn shr(self, rhs: usize) -> Self::Output {
         if rhs == 0 {
             return self;
         }
-        Bit(false)
+        return Self(false)
     }
 }
 
@@ -163,18 +163,18 @@ impl ShrAssign<usize> for Bit {
 }
 
 impl Mul for Bit {
-    type Output = Bit;
+    type Output = Self;
     fn mul(self, rhs: Self) -> Self::Output {
         if *self {
             rhs
         } else {
-            Bit(false)
+            return Self(false)
         }
     }
 }
 
 impl Div for Bit {
-    type Output = Bit;
+    type Output = Self;
     fn div(self, rhs: Self) -> Self::Output {
         if *rhs {
             self
@@ -185,53 +185,53 @@ impl Div for Bit {
 }
 
 impl Add for Bit {
-    type Output = Bit;
+    type Output = Self;
 
     fn add(self, rhs: Self) -> Self::Output {
         if *self {
             if *rhs {
-                return Bit(false);
+                return Self(false);
             } else {
-                return Bit(true);
+                return Self(true);
             }
         }
         if *rhs {
-            Bit(true)
+            return Self(true)
         } else {
-            Bit(false)
+            return Self(false)
         }
     }
 }
 
 impl Sub for Bit {
-    type Output = Bit;
+    type Output = Self;
 
     fn sub(self, rhs: Self) -> Self::Output {
         if *self {
             if *rhs {
-                Bit(false)
+                return Self(false)
             } else {
                 self
             }
         } else {
-            Bit(false)
+            return Self(false)
         }
     }
 }
 
 impl One for Bit {
     fn one() -> Self {
-        Bit(true)
+        return Self(true)
     }
 }
 
 impl Zero for Bit {
     fn zero() -> Self {
-        Bit(false)
+        return Self(false)
     }
 
     fn is_zero(&self) -> bool {
-        *self == Bit(false)
+        return *self == Self(false)
     }
 }
 
