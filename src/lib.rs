@@ -2,13 +2,6 @@
 //!
 //! The *Bit* and *Bits* structures are the heart of *bitman*.
 //!
-#![warn(
-    clippy::all,
-    clippy::restriction,
-    clippy::pedantic,
-    clippy::nursery,
-    clippy::cargo
-)]
 #![allow(incomplete_features)]
 #![feature(specialization)]
 #![cfg_attr(not(test), no_std)]
