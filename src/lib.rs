@@ -2,8 +2,6 @@
 //!
 //! The *Bit* and *Bits* structures are the heart of *bitman*.
 //!
-#![allow(incomplete_features)]
-#![feature(specialization)]
 #![cfg_attr(not(test), no_std)]
 
 use core::fmt::Debug;

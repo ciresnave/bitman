@@ -11,8 +11,7 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  # The compiler comes from rust-toolchain.toml (a pinned nightly: the crate uses
-  # `#![feature(specialization)]`), so no job names a toolchain.
+  # The compiler comes from rust-toolchain.toml (pinned stable), so no job names a toolchain.
   check:
     runs-on: ubuntu-latest
     steps:
@@ -29,6 +28,14 @@ jobs:
         run: cargo doc --no-deps --locked
         env:
           RUSTDOCFLAGS: -D warnings
+
+  msrv:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: rustup toolchain install 1.85.0 --profile minimal
+      - name: build on the declared MSRV (dev-dependencies need newer)
+        run: cargo +1.85.0 build --locked
 
   deny:
     runs-on: ubuntu-latest
