@@ -426,17 +426,17 @@ impl BitMan for Bits {
     }
 
     #[inline]
-    default fn set_bit(&mut self, index: &u32, bit: &Bit) {
+    fn set_bit(&mut self, index: &u32, bit: &Bit) {
         self[*index as usize] = *bit;
     }
 
     #[inline]
-    default fn bits(&self) -> Bits {
+    fn bits(&self) -> Bits {
         self.clone()
     }
 
     #[inline]
-    default fn set_bits(&mut self, mut index: u32, bits: &Bits) {
+    fn set_bits(&mut self, mut index: u32, bits: &Bits) {
         for bit in bits.iter() {
             self[index as usize] = *bit;
             index += 1;

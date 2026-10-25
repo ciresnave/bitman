@@ -5,6 +5,8 @@
 
 *<p align="center">rips your variables to bits</p>*
 
+> **Note:** bitman 2.0.1 and earlier required nightly Rust (`#![feature(specialization)]`) and did not build on stable. Later releases build on stable (MSRV 1.85).
+
 ## Overview
 
 *bitman* provides a way to read and write the individual bits of your variables as well as the ability to define fields within your variable that can be read or written as any type you choose.
