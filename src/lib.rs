@@ -24,9 +24,9 @@ pub use bits::*;
 
 #[cfg(test)]
 mod bitman_tests;
-#[cfg(test)]
-pub use bitman_tests::*;
 
+// Not yet public (README promises an API this trait should back; see issue #1), so some methods have no caller.
+#[allow(dead_code)]
 trait BitMan
 where
     Self: Sized
@@ -65,7 +65,10 @@ where
 
     #[inline]
     fn set_bit(&mut self, index: &u32, bit: &Bit) {
-        assert!(*index <= ((self.bit_len()) - 1).try_into().unwrap(), "Index out of range in call to set_bit()");
+        assert!(
+            *index <= ((self.bit_len()) - 1).try_into().unwrap(),
+            "Index out of range in call to set_bit()"
+        );
         if **bit {
             let mut mask: Self = Self::one();
             if let Some(new_mask) = mask.checked_shl((self.bit_len() as u32 - 1) - index) {

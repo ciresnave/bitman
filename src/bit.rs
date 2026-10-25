@@ -11,8 +11,6 @@ use num_traits::{CheckedShl, One, Zero};
 
 #[cfg(test)]
 mod bit_tests;
-#[cfg(test)]
-pub use bit_tests::*;
 
 #[derive(Debug, Default, PartialEq, Eq, Copy, Clone, Hash)]
 pub struct Bit(pub bool);
@@ -41,7 +39,7 @@ impl BitAnd for Bit {
     type Output = Self;
 
     fn bitand(self, rhs: Self) -> Self {
-        return Self(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 
@@ -55,7 +53,7 @@ impl BitOr for Bit {
     type Output = Self;
 
     fn bitor(self, rhs: Self) -> Self {
-        return Self(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 
@@ -69,11 +67,7 @@ impl BitXor for Bit {
     type Output = Self;
 
     fn bitxor(self, rhs: Self) -> Self {
-        if self.0 {
-            return Self(!(rhs.0))
-        } else {
-            return Self(rhs.0)
-        }
+        if self.0 { Self(!(rhs.0)) } else { Self(rhs.0) }
     }
 }
 
@@ -91,7 +85,7 @@ impl Not for Bit {
     type Output = Self;
 
     fn not(self) -> Self::Output {
-        return Self(!self.0)
+        Self(!self.0)
     }
 }
 
@@ -102,7 +96,7 @@ impl Shl<usize> for Bit {
         if rhs == 0 {
             return self;
         }
-        return Self(false)
+        Self(false)
     }
 }
 
@@ -121,7 +115,7 @@ impl Shl<u32> for Bit {
         if rhs == 0 {
             return self;
         }
-        return Self(false)
+        Self(false)
     }
 }
 
@@ -150,7 +144,7 @@ impl Shr<usize> for Bit {
         if rhs == 0 {
             return self;
         }
-        return Self(false)
+        Self(false)
     }
 }
 
@@ -165,22 +159,14 @@ impl ShrAssign<usize> for Bit {
 impl Mul for Bit {
     type Output = Self;
     fn mul(self, rhs: Self) -> Self::Output {
-        if *self {
-            rhs
-        } else {
-            return Self(false)
-        }
+        if *self { rhs } else { Self(false) }
     }
 }
 
 impl Div for Bit {
     type Output = Self;
     fn div(self, rhs: Self) -> Self::Output {
-        if *rhs {
-            self
-        } else {
-            panic!("Divide by Zero")
-        }
+        if *rhs { self } else { panic!("Divide by Zero") }
     }
 }
 
@@ -195,11 +181,7 @@ impl Add for Bit {
                 return Self(true);
             }
         }
-        if *rhs {
-            return Self(true)
-        } else {
-            return Self(false)
-        }
+        if *rhs { Self(true) } else { Self(false) }
     }
 }
 
@@ -208,30 +190,26 @@ impl Sub for Bit {
 
     fn sub(self, rhs: Self) -> Self::Output {
         if *self {
-            if *rhs {
-                return Self(false)
-            } else {
-                self
-            }
+            if *rhs { Self(false) } else { self }
         } else {
-            return Self(false)
+            Self(false)
         }
     }
 }
 
 impl One for Bit {
     fn one() -> Self {
-        return Self(true)
+        Self(true)
     }
 }
 
 impl Zero for Bit {
     fn zero() -> Self {
-        return Self(false)
+        Self(false)
     }
 
     fn is_zero(&self) -> bool {
-        return *self == Self(false)
+        *self == Self(false)
     }
 }
 

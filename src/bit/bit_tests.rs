@@ -4,14 +4,14 @@ use proptest::prelude::*;
 
 #[test]
 fn deref_of_default_bit_is_false() {
-    assert_eq!(*bitman::Bit::default(), false);
+    assert!(!(*bitman::Bit::default()));
 }
 
 #[test]
 fn writing_true_to_mutable_ref_of_default_bit_makes_it_true() {
     let mut bit: bitman::Bit = bitman::Bit::default();
     *bit = true;
-    assert_eq!(*bit, true);
+    assert!(*bit);
 }
 
 #[test]
