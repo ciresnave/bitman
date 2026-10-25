@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.0.1]
+
+### Miscellaneous
+
+- Added .github/CODEOWNERS
+
 ## [unreleased]
 
 ### Bug Fixes
