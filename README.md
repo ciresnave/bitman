@@ -5,7 +5,7 @@
 
 *<p align="center">rips your variables to bits</p>*
 
-> **Note:** bitman 2.0.1 and earlier required nightly Rust (`#![feature(specialization)]`) and did not build on stable. Later releases build on stable (MSRV 1.85).
+> **Note:** bitman builds on stable Rust since 2.0.3 (MSRV 1.85). Versions 2.0.0 to 2.0.2 required nightly Rust (`#![feature(specialization)]`) and did not build on stable.
 
 ## Overview
 
