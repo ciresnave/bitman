@@ -3,15 +3,13 @@
     categories    = ["data-structures", "encoding", "no-std", "parsing"]
     description   = "An easy to use bit manipulation library for Rust"
     documentation = "https://github.com/ciresnave/bitman"
-    edition       = "2021"
-    homepage      = "https://github.com/ciresnave/bitman"
+    edition       = "2024"
     keywords      = ["bitfield", "bit", "bits", "byte", "binary"]
     license       = "MIT"
     name          = "bitman"
     readme        = "README.md"
     repository    = "https://github.com/ciresnave/bitman"
-    rust-version  = "1.61"
-    version       = "2.0.1"
+    version       = "2.0.2"
 
     # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -21,10 +19,7 @@
 
 
 [dependencies]
-    libc-print = "0.1.21"
-    num-traits = "0.2.16"
+    num-traits = "0.2"
 
 [dev-dependencies]
-    criterion  = "0.5.1"
-    flamegraph = "0.6.3"
-    proptest   = "1.2.0"
+    proptest = "1"

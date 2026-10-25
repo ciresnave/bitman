@@ -1,0 +1,5 @@
+[toolchain]
+# bitman uses `#![feature(specialization)]`, so it builds on nightly only (stable: E0554, measured 2026-10-25).
+# Pinned to a literal dated nightly so "verified" names one compiler, not whatever `nightly` is today.
+channel = "nightly-2026-09-29"
+components = ["rustfmt", "clippy"]
