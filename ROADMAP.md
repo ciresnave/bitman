@@ -28,3 +28,8 @@ BitMan Roadmap for v2.0
 - Add PropTest for property-based testing
 - Add Tarpaulin for test coverage monitoring
 - Add Criterion and Flamegraph for profiling
+
+Open issues (decided 2026-10-25)
+--------------------------------
+- #2 Bits iteration: fixed by replacing `Iterator for Bits` with `IntoIterator` for `Bits`, `&Bits`, `&mut Bits` (breaking, 3.0.0).
+- #1 arrays/vectors/groups: (a) README matches real API, (b) public trait for primitives, (c) `[T; N]`, `[T]`, `Vec<T>` support.

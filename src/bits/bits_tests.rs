@@ -1,5 +1,5 @@
 use crate as bitman;
-use bitman::BitMan;
+use bitman::{Bit, BitMan, Bits};
 use num_traits::{One, Zero};
 
 #[test]
@@ -79,4 +79,22 @@ fn bits_method_test_on_u8() {
     assert_eq!(new_bits.bit_len(), 8);
     assert_eq!(new_bits[0], bitman::Bit(false));
     assert_eq!(0u8.bits(), bitman::Bits::new(&[bitman::Bit::zero(); 8]));
+}
+
+#[test]
+fn bits_iterate_in_index_order_by_value_and_by_reference() {
+    let bits = Bits::new(&[Bit(true), Bit(false), Bit(false)]);
+    let by_ref: Vec<Bit> = (&bits).into_iter().copied().collect();
+    assert_eq!(by_ref, std::vec![Bit(true), Bit(false), Bit(false)]);
+    let by_value: Vec<Bit> = bits.into_iter().collect();
+    assert_eq!(by_value, std::vec![Bit(true), Bit(false), Bit(false)]);
+}
+
+#[test]
+fn bits_can_be_mutated_through_a_for_loop() {
+    let mut bits = Bits::new(&[Bit(true), Bit(false)]);
+    for bit in &mut bits {
+        *bit = !*bit;
+    }
+    assert_eq!(bits, Bits::new(&[Bit(false), Bit(true)]));
 }

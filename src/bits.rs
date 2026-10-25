@@ -444,10 +444,31 @@ impl BitMan for Bits {
     }
 }
 
-impl Iterator for Bits {
+impl IntoIterator for Bits {
     type Item = Bit;
-    fn next(&mut self) -> Option<Self::Item> {
-        self.inner.pop()
+    type IntoIter = alloc::vec::IntoIter<Bit>;
+
+    /// Yields the bits in index order (index 0 first).
+    fn into_iter(self) -> Self::IntoIter {
+        self.inner.into_iter()
+    }
+}
+
+impl<'a> IntoIterator for &'a Bits {
+    type Item = &'a Bit;
+    type IntoIter = core::slice::Iter<'a, Bit>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.inner.iter()
+    }
+}
+
+impl<'a> IntoIterator for &'a mut Bits {
+    type Item = &'a mut Bit;
+    type IntoIter = core::slice::IterMut<'a, Bit>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.inner.iter_mut()
     }
 }
 
