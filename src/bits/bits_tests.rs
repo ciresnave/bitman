@@ -98,3 +98,25 @@ fn bits_can_be_mutated_through_a_for_loop() {
     }
     assert_eq!(bits, Bits::new(&[Bit(false), Bit(true)]));
 }
+
+#[test]
+fn set_bits_writes_ones_and_zeros_msb_first_at_the_given_index() {
+    let mut value = 0u8;
+    value.set_bits(0, &Bits::new(&[Bit(true), Bit(false), Bit(true)]));
+    assert_eq!(value, 0b1010_0000);
+    let mut value = 0xFFu8;
+    value.set_bits(4, &Bits::new(&[Bit(false), Bit(false)]));
+    assert_eq!(value, 0b1111_0011);
+}
+
+proptest::proptest! {
+    #[test]
+    fn set_bits_then_bits_reads_back(start in 0u32..24, len in 1usize..8, seed: u32, pattern: u8) {
+        let mut value = seed;
+        let written = Bits::new(&(0..len).map(|i| Bit((pattern >> i) & 1 == 1)).collect::<std::vec::Vec<_>>());
+        value.set_bits(start, &written);
+        for (offset, bit) in written.iter().enumerate() {
+            proptest::prop_assert_eq!(value.bit(&(start + offset as u32)), *bit);
+        }
+    }
+}

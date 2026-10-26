@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.0.2]
+
+Use 3.0.2 or later: 3.0.0 and 3.0.1 return wrong results from the integer and byte conversions below.
+Bits index 0 is the most significant bit.
+
+### Fixed
+
+- `Bits::from(u8)` (before -> after): `Bits::from(0b1000_0001u8)` had 1 bit, now 8 (`10000001`). The width was counted in bytes, so `u16/u32/u64/u128` gave 2/4/8/16 bits, now 16/32/64/128.
+- `u8::from(&Bits)` and the other integer conversions: `10000001` read as 128, now 129; 3 bits `101` now read as 5 (right-aligned; the old shift was counted in bytes); more bits than the type holds now keep the low-order bits.
+- `Bits::to_be_bytes`: `10000001` gave `[128]`, now `[129]`; a partial first byte is now padded with leading zero bits. `to_le_bytes`, `to_be_bytes_of_le_bits` and `to_le_bytes_of_le_bits` follow (the last two reverse the bit order within each byte).
+- `Bits::from_be_bytes_of_le_bits` always returned an empty `Bits`; `from_le_bytes_of_le_bits` therefore did too. Both now round-trip with their `to_` counterparts.
+- `Bits + Bits` returned an empty `Bits` for any input (the loop range was empty), now binary addition at the wider width, dropping a carry out of the top (`200u8 + 100u8` as `Bits` is 44).
+- The internal `set_bits` wrote inverted bits at the wrong offset; fixed (it is not public yet).
+
 ## [3.0.1]
 
 ### Miscellaneous

@@ -91,31 +91,11 @@ where
         output_value
     }
 
+    /// Writes `bits` starting at bit `index` (bit 0 is the most significant).
     #[inline]
-    fn set_bits(&mut self, mut index: u32, bits: &Bits) {
-        for current_bit in bits.iter() {
-            if current_bit.0 {
-                let mut mask: Self = Self::one();
-                if let Some(new_mask) =
-                    CheckedShl::checked_shl(&mask, self.bit_len() as u32 - index)
-                {
-                    mask = new_mask;
-                } else {
-                    mask = Self::zero();
-                }
-                *self &= !mask;
-            } else {
-                let mut mask: Self = Self::one();
-                if let Some(new_mask) =
-                    CheckedShl::checked_shl(&mask, self.bit_len() as u32 - index)
-                {
-                    mask = new_mask;
-                } else {
-                    mask = Self::zero();
-                }
-                *self |= mask;
-            }
-            index += 1;
+    fn set_bits(&mut self, index: u32, bits: &Bits) {
+        for (offset, current_bit) in bits.iter().enumerate() {
+            self.set_bit(&(index + offset as u32), current_bit);
         }
     }
 }
