@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.1.0]
+
+### Added
+
+- `BitMan` is now public: `bit_len`, `bit`, `set_bit`, `bits`, `set_bits` (bit 0 is the most significant bit; indices are `usize`; out of range panics). Implemented for all primitive integers, `Bit`, `Bits`, and for `[T; N]`, `[T]` and `Vec<T>` where `T: BitMan` (one long bit sequence). Closes the arrays/vectors request in #1.
+
 ## [3.0.3]
 
 ### Documentation

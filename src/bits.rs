@@ -182,7 +182,7 @@ impl BitAndAssign for Bits {
         let old_self = self.clone();
         while let Some(bit_from_self) = old_self.get(index_counter) {
             if let Some(bit_from_rhs) = rhs.get(index_counter) {
-                self.set_bit(&(index_counter as u32), &(*bit_from_self & *bit_from_rhs));
+                self.set_bit(index_counter, *bit_from_self & *bit_from_rhs);
                 index_counter += 1;
             } else {
                 break;
@@ -377,7 +377,7 @@ impl One for Bits {
     #[inline]
     fn one() -> Self {
         let mut output = Self::new(&vec![Bit(false); size_of::<Self>() * 8]);
-        output.set_bit(&((size_of::<Self>()) as u32 * 7), &Bit(true));
+        output.set_bit(size_of::<Self>() * 7, Bit(true));
         output
     }
 
@@ -409,30 +409,22 @@ impl Mul for Bits {
 impl BitMan for Bits {
     #[inline]
     fn bit_len(&self) -> usize {
-        (*self).len()
+        self.len()
     }
 
     #[inline]
-    fn bit(&self, index: &u32) -> Bit {
-        self[*index as usize]
+    fn bit(&self, index: usize) -> Bit {
+        self[index]
     }
 
     #[inline]
-    fn set_bit(&mut self, index: &u32, bit: &Bit) {
-        self[*index as usize] = *bit;
+    fn set_bit(&mut self, index: usize, bit: Bit) {
+        self[index] = bit;
     }
 
     #[inline]
     fn bits(&self) -> Bits {
         self.clone()
-    }
-
-    #[inline]
-    fn set_bits(&mut self, mut index: u32, bits: &Bits) {
-        for bit in bits.iter() {
-            self[index as usize] = *bit;
-            index += 1;
-        }
     }
 }
 
@@ -478,7 +470,7 @@ macro_rules! impl_to_and_from_bits {
                 let source = &bits_to_convert.inner[bits_to_convert.inner.len() - kept..];
                 let offset = type_bits - kept;
                 for (index, current_bit) in source.iter().enumerate() {
-                    new_value.set_bit(&((offset + index) as u32), current_bit);
+                    new_value.set_bit(offset + index, *current_bit);
                 }
                 new_value
             }
@@ -488,7 +480,7 @@ macro_rules! impl_to_and_from_bits {
             fn from(value_to_convert: $new_type) -> Bits {
                 let mut output_value: Bits = Default::default();
                 for index in 0..value_to_convert.bit_len() {
-                    output_value.inner.push(value_to_convert.bit(&(index as u32)));
+                    output_value.inner.push(value_to_convert.bit(index));
                 }
                 output_value
             }

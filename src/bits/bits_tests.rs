@@ -4,41 +4,41 @@ use num_traits::{One, Zero};
 
 #[test]
 fn bit_method_test_on_u8() {
-    assert_eq!(0u8.bit(&0), bitman::Bit(false));
-    assert_eq!(0u8.bit(&1), bitman::Bit(false));
-    assert_eq!(0u8.bit(&2), bitman::Bit(false));
-    assert_eq!(0u8.bit(&3), bitman::Bit(false));
-    assert_eq!(0u8.bit(&4), bitman::Bit(false));
-    assert_eq!(0u8.bit(&5), bitman::Bit(false));
-    assert_eq!(0u8.bit(&6), bitman::Bit(false));
-    assert_eq!(0u8.bit(&7), bitman::Bit(false));
+    assert_eq!(0u8.bit(0), bitman::Bit(false));
+    assert_eq!(0u8.bit(1), bitman::Bit(false));
+    assert_eq!(0u8.bit(2), bitman::Bit(false));
+    assert_eq!(0u8.bit(3), bitman::Bit(false));
+    assert_eq!(0u8.bit(4), bitman::Bit(false));
+    assert_eq!(0u8.bit(5), bitman::Bit(false));
+    assert_eq!(0u8.bit(6), bitman::Bit(false));
+    assert_eq!(0u8.bit(7), bitman::Bit(false));
 }
 
 #[test]
 fn set_bit_method_test_on_u8() {
     let mut my_u8 = 0u8;
-    my_u8.set_bit(&0, &bitman::Bit(true));
-    assert_eq!(my_u8.bit(&0), bitman::Bit(true));
-    my_u8.set_bit(&1, &bitman::Bit(true));
-    assert_eq!(my_u8.bit(&1), bitman::Bit(true));
+    my_u8.set_bit(0, bitman::Bit(true));
+    assert_eq!(my_u8.bit(0), bitman::Bit(true));
+    my_u8.set_bit(1, bitman::Bit(true));
+    assert_eq!(my_u8.bit(1), bitman::Bit(true));
     let mut my_u8 = 0u8;
-    my_u8.set_bit(&2, &bitman::Bit(true));
-    assert_eq!(my_u8.bit(&2), bitman::Bit(true));
+    my_u8.set_bit(2, bitman::Bit(true));
+    assert_eq!(my_u8.bit(2), bitman::Bit(true));
     let mut my_u8 = 0u8;
-    my_u8.set_bit(&3, &bitman::Bit(true));
-    assert_eq!(my_u8.bit(&3), bitman::Bit(true));
+    my_u8.set_bit(3, bitman::Bit(true));
+    assert_eq!(my_u8.bit(3), bitman::Bit(true));
     let mut my_u8 = 0u8;
-    my_u8.set_bit(&4, &bitman::Bit(true));
-    assert_eq!(my_u8.bit(&4), bitman::Bit(true));
+    my_u8.set_bit(4, bitman::Bit(true));
+    assert_eq!(my_u8.bit(4), bitman::Bit(true));
     let mut my_u8 = 0u8;
-    my_u8.set_bit(&5, &bitman::Bit(true));
-    assert_eq!(my_u8.bit(&5), bitman::Bit(true));
+    my_u8.set_bit(5, bitman::Bit(true));
+    assert_eq!(my_u8.bit(5), bitman::Bit(true));
     let mut my_u8 = 0u8;
-    my_u8.set_bit(&6, &bitman::Bit(true));
-    assert_eq!(my_u8.bit(&6), bitman::Bit(true));
+    my_u8.set_bit(6, bitman::Bit(true));
+    assert_eq!(my_u8.bit(6), bitman::Bit(true));
     let mut my_u8 = 0u8;
-    my_u8.set_bit(&7, &bitman::Bit(true));
-    assert_eq!(my_u8.bit(&7), bitman::Bit(true));
+    my_u8.set_bit(7, bitman::Bit(true));
+    assert_eq!(my_u8.bit(7), bitman::Bit(true));
 }
 
 #[test]
@@ -111,12 +111,12 @@ fn set_bits_writes_ones_and_zeros_msb_first_at_the_given_index() {
 
 proptest::proptest! {
     #[test]
-    fn set_bits_then_bits_reads_back(start in 0u32..24, len in 1usize..8, seed: u32, pattern: u8) {
+    fn set_bits_then_bits_reads_back(start in 0usize..24, len in 1usize..8, seed: u32, pattern: u8) {
         let mut value = seed;
         let written = Bits::new(&(0..len).map(|i| Bit((pattern >> i) & 1 == 1)).collect::<std::vec::Vec<_>>());
         value.set_bits(start, &written);
         for (offset, bit) in written.iter().enumerate() {
-            proptest::prop_assert_eq!(value.bit(&(start + offset as u32)), *bit);
+            proptest::prop_assert_eq!(value.bit(start + offset), *bit);
         }
     }
 }
