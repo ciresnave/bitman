@@ -4,12 +4,7 @@ use bitman::{Bit, Bits};
 use proptest::prelude::*;
 
 fn bits_from(pattern: &str) -> Bits {
-    Bits::new(
-        &pattern
-            .chars()
-            .map(|c| Bit(c == '1'))
-            .collect::<Vec<Bit>>(),
-    )
+    Bits::new(&pattern.chars().map(|c| Bit(c == '1')).collect::<Vec<Bit>>())
 }
 
 #[test]
