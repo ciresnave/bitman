@@ -3,6 +3,7 @@
 //! The *Bit* and *Bits* structures are the heart of *bitman*.
 //!
 #![cfg_attr(not(test), no_std)]
+#![doc = include_str!("../README.md")]
 
 use core::fmt::Debug;
 use core::{
