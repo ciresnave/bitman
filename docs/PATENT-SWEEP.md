@@ -1,4 +1,4 @@
-# Patent sweep: bitman 2.0.1 line (covers 2.0.x; swept at `ffd3fe0`, source identical to published 2.0.1 apart from build config)
+# Patent sweep: bitman 3.1.0 (covers 2.0.x to 3.1.x; first swept 2026-10-25 at `ffd3fe0`, refreshed 2026-10-26 at 3.1.0 / `7ba003c`)
 
 Date: 2026-10-25; Run by: bitman lane, Claude Sonnet 5.5; Method: AI-assisted search (web search restricted to patents.google.com) and claim read via `tools/patent-claims.py`; NOT legal advice; NOT a freedom-to-operate opinion.
 
@@ -9,6 +9,7 @@ Date: 2026-10-25; Run by: bitman lane, Claude Sonnet 5.5; Method: AI-assisted se
 4. Reading and writing a single bit of an integer by index.
 5. Converting `Bits` to and from byte arrays in four variants (big/little byte order x big/little bit order).
 6. Macro generating `From` conversions between `Bits` and integer types.
+7. (added 3.1.0) A `BitMan` trait giving get-bit/set-bit/get-bits/set-bits by index on integers, and on arrays, slices and vectors of them treated as one contiguous bit sequence (index walks the elements).
 
 (Overlap-prone mechanisms only; the crate has no other mechanisms. It is a conventional bit-manipulation helper library.)
 
@@ -35,7 +36,15 @@ Date: 2026-10-25; Run by: bitman lane, Claude Sonnet 5.5; Method: AI-assisted se
 | 14 | US9678729B2 | Co-specialization of specialized classes | Oracle | ACTIVE | 1 only | "specialization" | claims runtime specialization of generic classes in a managed runtime; and bitman 2.0.3 no longer uses specialization at all | clear |
 | 15 | US7370180B2, US20110099353A1, US9256434B2 | Bitfield extract/insert instructions | ARM, MIPS, IBM | expired | 1 only each | bit-field extract | all processor-instruction claims | clear |
 
-For hits 10-15 only independent claim 1 was read (full text for 1-9 as listed); dependent claims unread. Hits not claim-read: US7305383B1, US10229143B2 (surfaced by the bit-array query; search-index/automaton topics, titles only): `unread`.
+| 16 | US7305383B1 | Bitmap array compressing a DFA state table | Cisco | expired | 1 (independent) | bitmap array | claims default-value compression of automaton next-state tables with pointer array; no such thing here | clear |
+| 17 | US10229143B2 | Bit vector search index storage/retrieval | Microsoft | ACTIVE | 1 (independent) | bit vector | claims search-query term lookup in bit-vector index with explicit mappings; bitman has no search index | clear |
+| 18 | US9552289B1 | Bitwise addressing of entries in a forward lookup table | Seagate | expired | 1, 9, 18 (independent) | entries at bit offsets across contiguous words | claims SSD logical-to-physical block lookup table with entries wider than a word; we do not implement a lookup table | clear |
+| 19 | US4467443A | Bit addressable variable length memory system | Burroughs | expired | 1, 6, 11 (independent) | bit-addressed variable-length fields | claims a memory system with two cell arrays and enable control hardware | clear |
+
+For hits 10-15 only independent claim 1 was read (full text for 1-9 as listed); dependent claims unread. US7305383B1 and US10229143B2, `unread` on 2026-10-25, were read on 2026-10-26 (rows 16-17).
+
+## Queries added 2026-10-26 (idea 7)
+- "patent addressing individual bits across array of words as single contiguous bit sequence get bit set bit index software"
 
 ## Second-pass queries (2026-10-25)
 - "bit array data structure set of bits vector of booleans operations shift and or patent claim software" (bit sets/arrays)
@@ -43,7 +52,7 @@ For hits 10-15 only independent claim 1 was read (full text for 1-9 as listed); 
 - "patent extracting and inserting bit field from integer using mask and shift software library bit-field accessor" (bit-field manipulation)
 
 ## Needs review (to the PM)
-None found. The `unread` entries (US7305383B1, US10229143B2) were not read.
+None found. No hit is `unread` (2026-10-26).
 
 ## Limitations
 Five queries total; search engine results, not an exhaustive patent-office search; machine-converted claim text; only US and some EP coverage; software-library ideas here are long-established prior art (language-level bit ops), which lowers risk but is not a clearance.
