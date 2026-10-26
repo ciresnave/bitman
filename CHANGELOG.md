@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.1.2]
+
+### Documentation
+
+- Patent sweep refreshed for 3.1.0 (new `BitMan` capability) and the two previously unread hits read.
+
 ## [3.1.1]
 
 ### Documentation
