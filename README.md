@@ -80,10 +80,31 @@ assert_eq!(Bits::from_be_bytes(&[1, 2]), bits);
 Adding two `Bits` is binary addition at the wider width (a carry out of the top
 is dropped): `Bits::from(200u8) + Bits::from(100u8)` is `Bits::from(44u8)`.
 
-Not yet available: reading and writing bit ranges of an integer without
-converting to `Bits`, fields that read or write any type, and arrays and
-vectors of variables (see the Roadmap below and
-[issue #1](https://github.com/ciresnave/bitman/issues/1)).
+Read and write bits of a value in place, without converting it, with the
+`BitMan` trait. It is implemented for every primitive integer (signed and
+unsigned), `Bit`, `Bits`, and for arrays, slices and `Vec`s of those, where it
+treats the elements as one long bit sequence:
+
+```rust
+use bitman::{Bit, BitMan, Bits};
+
+let mut word = 0u16;
+word.set_bit(0, Bit(true));
+assert_eq!(word.bit(0), Bit(true));
+word.set_bits(4, &Bits::new(&[Bit(true), Bit(true), Bit(false), Bit(true)]));
+assert_eq!(word, 0b1000_1101_0000_0000);
+
+let mut buffer = [0u8; 4];
+buffer.set_bit(31, Bit(true));          // the last bit of the last byte
+assert_eq!(buffer, [0, 0, 0, 1]);
+assert_eq!(buffer.bit_len(), 32);
+```
+
+Out-of-range indices panic. Finding a bit in an array, slice or `Vec` walks
+its elements, so it takes time linear in their number.
+
+Not yet available: fields that read or write any type at a bit offset
+([issue #1](https://github.com/ciresnave/bitman/issues/1)).
 
 Requirements: stable Rust 1.85 or newer (2.0.0 to 2.0.2 required nightly), and
 use 3.0.2 or newer (earlier versions return wrong conversion results).
@@ -98,5 +119,4 @@ We have added a git hook to kick off git cliff on every commit.  See .git/hooks/
 
 ## Roadmap
 
-See [ROADMAP.md](ROADMAP.md). Next: a public trait for reading and writing bits
-of primitive integers, then support for arrays, slices and vectors.
+See [ROADMAP.md](ROADMAP.md). Next: typed fields at a bit offset.

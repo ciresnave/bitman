@@ -6,7 +6,7 @@ use core::{
     },
 };
 
-use crate::{BitMan, Bits};
+use crate::BitMan;
 use num_traits::{CheckedShl, One, Zero};
 
 #[cfg(test)]
@@ -214,28 +214,20 @@ impl Zero for Bit {
 }
 
 impl BitMan for Bit {
+    #[inline]
     fn bit_len(&self) -> usize {
         1
     }
 
     #[inline]
-    fn bit(&self, _index: &u32) -> Bit {
+    fn bit(&self, index: usize) -> Bit {
+        assert_eq!(index, 0, "bit index {index} out of range for 1 bit");
         *self
     }
 
     #[inline]
-    fn set_bit(&mut self, _index: &u32, bit: &Bit) {
+    fn set_bit(&mut self, index: usize, bit: Bit) {
+        assert_eq!(index, 0, "bit index {index} out of range for 1 bit");
         self.0 = bit.0;
-    }
-
-    #[inline]
-    fn bits(&self) -> Bits {
-        Bits::new(&[*self])
-    }
-
-    #[inline]
-    fn set_bits(&mut self, index: u32, bits: &Bits) {
-        assert_eq!(index, 0);
-        self.0 = bits.get(&bits.len() - 1).unwrap().0;
     }
 }

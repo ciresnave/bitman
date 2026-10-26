@@ -5,15 +5,8 @@
 #![cfg_attr(not(test), no_std)]
 #![doc = include_str!("../README.md")]
 
-use core::fmt::Debug;
-use core::{
-    mem::size_of,
-    ops::{BitAnd, BitAndAssign, BitOr, BitOrAssign, Not},
-};
 extern crate alloc;
-use alloc::borrow::ToOwned;
-use alloc::vec;
-use num_traits::{CheckedShl, One, Zero};
+use alloc::vec::Vec;
 
 mod bit;
 pub use bit::*;
@@ -24,103 +17,120 @@ pub use bits::*;
 #[cfg(test)]
 mod bitman_tests;
 
-// Not yet public (README promises an API this trait should back; see issue #1), so some methods have no caller.
-#[allow(dead_code)]
-trait BitMan
-where
-    Self: Sized
-        + BitAnd<Output = Self>
-        + BitAndAssign
-        + BitOr
-        + BitOrAssign
-        + Not<Output = Self>
-        + Debug
-        + PartialEq
-        + ToOwned<Owned = Self>
-        + CheckedShl
-        + Zero
-        + One,
-{
-    #[inline]
-    fn bit_len(&self) -> usize {
-        size_of::<Self>() * 8
-    }
+/// Read and write the individual bits of a value without converting it.
+///
+/// Bit 0 is the most significant bit. Out-of-range indices panic.
+/// Arrays, slices and vectors of `BitMan` values are one long bit sequence:
+/// the bits of element 0 come first. (Locating a bit in such a sequence walks
+/// the elements, so it costs time linear in their number.)
+pub trait BitMan {
+    /// Number of bits in this value.
+    fn bit_len(&self) -> usize;
 
-    #[inline]
-    fn bit(&self, index: &u32) -> Bit {
-        let mut mask = Self::one();
-        let offset: u32 = (self.bit_len() as u32 - 1) - *index;
-        if let Some(new_mask) = CheckedShl::checked_shl(&mask, offset) {
-            mask = new_mask;
-        } else {
-            panic!(
-                "Index {:?} passed to bit() is beyond the bounds of {:?}",
-                index, self
-            );
-        }
-        mask = self.to_owned() & mask;
-        Bit(mask != Self::zero())
-    }
+    /// The bit at `index`.
+    fn bit(&self, index: usize) -> Bit;
 
-    #[inline]
-    fn set_bit(&mut self, index: &u32, bit: &Bit) {
-        assert!(
-            *index <= ((self.bit_len()) - 1).try_into().unwrap(),
-            "Index out of range in call to set_bit()"
-        );
-        if **bit {
-            let mut mask: Self = Self::one();
-            if let Some(new_mask) = mask.checked_shl((self.bit_len() as u32 - 1) - index) {
-                mask = new_mask;
-                *self |= mask;
-            }
-        } else {
-            let mut mask: Self = Self::one();
-            if let Some(new_mask) = mask.checked_shl((self.bit_len() as u32 - 1) - index) {
-                mask = !new_mask;
-                *self &= mask;
-            }
-        }
-    }
+    /// Sets the bit at `index`.
+    fn set_bit(&mut self, index: usize, bit: Bit);
 
-    #[inline]
+    /// All the bits, in order.
     fn bits(&self) -> Bits {
-        let mut output_value: Bits = Bits::new(&vec![Bit(false); self.bit_len()]);
-        for current_index in 0..self.bit_len() as u32 {
-            (*output_value)[current_index as usize] = self.bit(&current_index);
-        }
-        output_value
+        let all: Vec<Bit> = (0..self.bit_len()).map(|index| self.bit(index)).collect();
+        Bits::new(&all)
     }
 
-    /// Writes `bits` starting at bit `index` (bit 0 is the most significant).
-    #[inline]
-    fn set_bits(&mut self, index: u32, bits: &Bits) {
+    /// Writes `bits` starting at bit `index`.
+    fn set_bits(&mut self, index: usize, bits: &Bits) {
         for (offset, current_bit) in bits.iter().enumerate() {
-            self.set_bit(&(index + offset as u32), current_bit);
+            self.set_bit(index + offset, *current_bit);
         }
     }
 }
 
-impl BitMan for u8 {}
+macro_rules! impl_bitman_for_integers {
+    ($($integer:ty),*) => {$(
+        impl BitMan for $integer {
+            #[inline]
+            fn bit_len(&self) -> usize {
+                <$integer>::BITS as usize
+            }
 
-impl BitMan for u16 {}
+            #[inline]
+            fn bit(&self, index: usize) -> Bit {
+                assert!(index < self.bit_len(), "bit index {index} out of range for {} bits", self.bit_len());
+                Bit((*self >> (self.bit_len() - 1 - index)) & 1 == 1)
+            }
 
-impl BitMan for u32 {}
+            #[inline]
+            fn set_bit(&mut self, index: usize, bit: Bit) {
+                assert!(index < self.bit_len(), "bit index {index} out of range for {} bits", self.bit_len());
+                let mask: $integer = 1 << (self.bit_len() - 1 - index);
+                if bit.0 {
+                    *self |= mask;
+                } else {
+                    *self &= !mask;
+                }
+            }
+        }
+    )*};
+}
 
-impl BitMan for u64 {}
+impl_bitman_for_integers!(
+    u8, u16, u32, u64, u128, usize, i8, i16, i32, i64, i128, isize
+);
 
-impl BitMan for u128 {}
+/// Finds the element holding bit `index` of a sequence and the bit's index inside it.
+fn locate<T: BitMan>(elements: &[T], mut index: usize) -> (usize, usize) {
+    for (position, element) in elements.iter().enumerate() {
+        let width = element.bit_len();
+        if index < width {
+            return (position, index);
+        }
+        index -= width;
+    }
+    panic!("bit index out of range");
+}
 
-impl BitMan for usize {}
+impl<T: BitMan> BitMan for [T] {
+    fn bit_len(&self) -> usize {
+        self.iter().map(BitMan::bit_len).sum()
+    }
 
-impl BitMan for i8 {}
+    fn bit(&self, index: usize) -> Bit {
+        let (position, inner) = locate(self, index);
+        self[position].bit(inner)
+    }
 
-impl BitMan for i16 {}
+    fn set_bit(&mut self, index: usize, bit: Bit) {
+        let (position, inner) = locate(self, index);
+        self[position].set_bit(inner, bit);
+    }
+}
 
-impl BitMan for i32 {}
+impl<T: BitMan, const N: usize> BitMan for [T; N] {
+    fn bit_len(&self) -> usize {
+        self.as_slice().bit_len()
+    }
 
-impl BitMan for i64 {}
+    fn bit(&self, index: usize) -> Bit {
+        self.as_slice().bit(index)
+    }
 
-impl BitMan for i128 {}
+    fn set_bit(&mut self, index: usize, bit: Bit) {
+        self.as_mut_slice().set_bit(index, bit);
+    }
+}
 
-impl BitMan for isize {}
+impl<T: BitMan> BitMan for Vec<T> {
+    fn bit_len(&self) -> usize {
+        self.as_slice().bit_len()
+    }
+
+    fn bit(&self, index: usize) -> Bit {
+        self.as_slice().bit(index)
+    }
+
+    fn set_bit(&mut self, index: usize, bit: Bit) {
+        self.as_mut_slice().set_bit(index, bit);
+    }
+}
