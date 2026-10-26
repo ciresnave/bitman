@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.0.3]
+
+### Documentation
+
+- README rewritten to describe the API that exists (the old text documented `to_bits`, `AnyIntegerType`, `as_integer`, none of which exist); its examples are compiled as doctests via the crate docs.
+- Removed the README roadmap section describing multithreading code that is not in the crate.
+
 ## [3.0.2]
 
 Use 3.0.2 or later: 3.0.0 and 3.0.1 return wrong results from the integer and byte conversions below.
