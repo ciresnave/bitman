@@ -32,4 +32,8 @@ BitMan Roadmap for v2.0
 Open issues (decided 2026-10-25)
 --------------------------------
 - #2 Bits iteration: fixed by replacing `Iterator for Bits` with `IntoIterator` for `Bits`, `&Bits`, `&mut Bits` (breaking, 3.0.0).
-- #1 arrays/vectors/groups: (a) README matches real API, (b) public trait for primitives, (c) `[T; N]`, `[T]`, `Vec<T>` support.
+- #1 arrays/vectors/groups: done in 3.1.0 (README matches real API; public `BitMan` for primitives, `Bit`, `Bits`, `[T; N]`, `[T]`, `Vec<T>`). Closed.
+
+Backlog
+-------
+- Typed fields at a bit offset (the 2.0 roadmap's "Field to get read()/write()" item, never implemented): `read::<T>(offset, len)` / `write(offset, value)` on any `BitMan`, converting via the existing `From<&Bits>`/`From<int> for Bits`. Design question: a `Field { offset, len }` value that can be defined once and reused, vs. plain methods on the trait.

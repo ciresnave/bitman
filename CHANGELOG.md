@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.1.1]
+
+### Documentation
+
+- ROADMAP: record #1 as done and the remaining backlog item (typed fields).
+
 ## [3.1.0]
 
 ### Added
