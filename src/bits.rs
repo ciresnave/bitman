@@ -38,100 +38,92 @@ impl Bits {
         }
     }
 
+    /// Bits packed into whole bytes, first bit most significant; a partial
+    /// first byte is padded with leading zero bits.
     #[inline]
     #[must_use]
     pub fn to_be_bytes(&self) -> Vec<u8> {
-        let mut bytes: Vec<u8> = Vec::new();
-        let length = self.len();
-        let mut current_length = 0usize;
-        loop {
-            let mut bits: Vec<Bit> = Vec::new();
-            for (count, bit) in self.inner.iter().enumerate() {
-                bits.push(*bit);
-                if count % 8 == 0 {
-                    bytes.push(u8::from(&Self::new(&bits)));
-                    current_length += 8;
-                }
-            }
-            if current_length >= length {
-                break;
-            }
-        }
-        bytes
+        self.pack_bytes(false)
     }
 
+    /// `to_be_bytes` with the byte order reversed.
     #[inline]
     #[must_use]
     pub fn to_le_bytes(&self) -> Vec<u8> {
         self.to_be_bytes().into_iter().rev().collect()
     }
 
+    /// `to_be_bytes_of_le_bits` with the byte order reversed.
     #[inline]
     #[must_use]
     pub fn to_le_bytes_of_le_bits(&self) -> Vec<u8> {
-        let mut vec_u8 = self.to_be_bytes_of_le_bits();
-        vec_u8.reverse();
-        vec_u8
+        self.to_be_bytes_of_le_bits().into_iter().rev().collect()
     }
 
+    /// Bits packed into whole bytes, first bit of each byte least significant.
     #[inline]
     #[must_use]
     pub fn to_be_bytes_of_le_bits(&self) -> Vec<u8> {
-        let mut bytes: Vec<u8> = Vec::new();
-        let length = self.len();
-        let mut current_length = 0usize;
-        loop {
-            let mut bits: Vec<Bit> = Vec::new();
-            for (count, bit) in self.inner.iter().enumerate() {
-                bits.push(*bit);
-                if count >= 7 {
-                    bits.reverse();
-                    break;
-                }
-            }
-            bytes.push(u8::from(&Self::new(&bits)));
-            current_length += 8;
-            if current_length >= length {
-                break;
+        self.pack_bytes(true)
+    }
+
+    fn pack_bytes(&self, least_significant_first: bool) -> Vec<u8> {
+        let padding = (8 - self.inner.len() % 8) % 8;
+        let mut padded: Vec<Bit> = vec![Bit(false); padding];
+        padded.extend_from_slice(&self.inner);
+        padded
+            .chunks(8)
+            .map(|chunk| {
+                chunk.iter().enumerate().fold(0u8, |byte, (position, bit)| {
+                    let shift = if least_significant_first {
+                        position
+                    } else {
+                        7 - position
+                    };
+                    byte | (u8::from(bit.0) << shift)
+                })
+            })
+            .collect()
+    }
+
+    fn unpack_bytes(slice_of_bytes: &[u8], least_significant_first: bool) -> Self {
+        let mut inner: Vec<Bit> = Vec::with_capacity(slice_of_bytes.len() * 8);
+        for byte in slice_of_bytes {
+            for position in 0..8 {
+                let shift = if least_significant_first {
+                    position
+                } else {
+                    7 - position
+                };
+                inner.push(Bit((byte >> shift) & 1 == 1));
             }
         }
-        bytes
+        Self { inner }
     }
 
     #[inline]
     #[must_use]
     pub fn from_be_bytes(slice_of_bytes: &[u8]) -> Self {
-        let mut bits = Self::new(&[]);
-        for current_u8 in slice_of_bytes {
-            bits.append(&mut current_u8.bits().inner);
-        }
-        bits
+        Self::unpack_bytes(slice_of_bytes, false)
     }
 
     #[inline]
     #[must_use]
     pub fn from_le_bytes(slice_of_bytes: &[u8]) -> Self {
-        let mut vec_of_bytes: Vec<u8> = Vec::from(slice_of_bytes);
-        vec_of_bytes.reverse();
-        Self::from_be_bytes(&vec_of_bytes)
+        let reversed: Vec<u8> = slice_of_bytes.iter().rev().copied().collect();
+        Self::unpack_bytes(&reversed, false)
     }
 
     #[inline]
     #[must_use]
     pub fn from_le_bytes_of_le_bits(slice_of_bytes: &[u8]) -> Self {
-        let mut vec_of_bytes: Vec<u8> = Vec::from(slice_of_bytes);
-        vec_of_bytes.reverse();
-        Self::from_be_bytes_of_le_bits(&mut vec_of_bytes)
+        let reversed: Vec<u8> = slice_of_bytes.iter().rev().copied().collect();
+        Self::unpack_bytes(&reversed, true)
     }
 
     #[inline]
     pub fn from_be_bytes_of_le_bits(slice_of_bytes: &mut [u8]) -> Self {
-        let mut vec_of_bits: Vec<Bit> = Vec::new();
-        for current_u8 in slice_of_bytes {
-            let mut current_u8_as_bits: Self = Self::new(&Self::from(*current_u8).inner);
-            vec_of_bits.append(&mut current_u8_as_bits);
-        }
-        Self::new(&Vec::new())
+        Self::unpack_bytes(slice_of_bytes, true)
     }
 }
 
@@ -476,31 +468,26 @@ impl<'a> IntoIterator for &'a mut Bits {
 macro_rules! impl_to_and_from_bits {
     ($($new_type:ty$(,)?)*) => {$(
         impl From<&Bits> for $new_type {
+            /// Reads the bits as a number, first bit most significant. Fewer bits
+            /// than the type holds are right-aligned; more keep the low-order bits.
             #[inline]
             fn from(bits_to_convert: &Bits) -> $new_type {
-                #[allow(clippy::manual_bits)] if bits_to_convert.bit_len() > size_of::<$new_type>() * 8 {
-                    let shortened_bits: Bits = Bits{
-                        inner: bits_to_convert.get((bits_to_convert.inner.len() - size_of::<$new_type>())..bits_to_convert.inner.len()).unwrap()
-                            .to_vec()
-                    };
-                    <$new_type>::from(&shortened_bits)
-                } else {
-                    let mut new_value: $new_type = Default::default();
-                    for (index, current_bit) in bits_to_convert.iter().enumerate() {
-                        new_value.set_bit(&(index as u32), &current_bit);
-                    }
-                    if bits_to_convert.inner.len() < size_of::<$new_type>() {
-                        new_value >>= size_of::<$new_type>() - bits_to_convert.inner.len();
-                    }
-                    new_value
+                let mut new_value: $new_type = Default::default();
+                let type_bits = new_value.bit_len();
+                let kept = bits_to_convert.inner.len().min(type_bits);
+                let source = &bits_to_convert.inner[bits_to_convert.inner.len() - kept..];
+                let offset = type_bits - kept;
+                for (index, current_bit) in source.iter().enumerate() {
+                    new_value.set_bit(&((offset + index) as u32), current_bit);
                 }
+                new_value
             }
         }
         impl From<$new_type> for Bits {
             #[inline]
-            fn from<'a>(value_to_convert: $new_type) -> Bits {
+            fn from(value_to_convert: $new_type) -> Bits {
                 let mut output_value: Bits = Default::default();
-                for index in 0..size_of::<$new_type>() {
+                for index in 0..value_to_convert.bit_len() {
                     output_value.inner.push(value_to_convert.bit(&(index as u32)));
                 }
                 output_value
@@ -514,28 +501,25 @@ impl_to_and_from_bits!(u8, u16, u32, u64, u128, usize, Bit);
 impl Add for Bits {
     type Output = Self;
 
+    /// Binary addition at the wider operand's width; a carry out of the top is dropped.
     #[inline]
     fn add(self, rhs: Self) -> Self::Output {
-        let mut output_value: Self::Output = Default::default();
+        let width = self.inner.len().max(rhs.inner.len());
+        let mut output_value: Vec<Bit> = vec![Bit(false); width];
         let mut carry = false;
-        for index in self.inner.len()..0 {
-            if !self.get(index).unwrap().0 {
-                if carry {
-                    if !rhs.get(index).unwrap().0 {
-                        carry = false;
-                    }
-                    output_value.inner.push(Bit(true));
-                } else {
-                    output_value.inner.push(*rhs.get(index).unwrap());
-                }
-            } else {
-                if rhs.get(index).unwrap().0 {
-                    carry = true;
-                }
-                output_value.inner.push(!*rhs.get(index).unwrap());
-            }
+        for position in 0..width {
+            let from_end = |bits: &Bits| {
+                bits.inner
+                    .len()
+                    .checked_sub(position + 1)
+                    .is_some_and(|index| bits.inner[index].0)
+            };
+            let (left, right) = (from_end(&self), from_end(&rhs));
+            output_value[width - 1 - position] = Bit(left ^ right ^ carry);
+            carry = (left & right) | (carry & (left ^ right));
         }
-        output_value.inner.reverse();
-        output_value
+        Self {
+            inner: output_value,
+        }
     }
 }
