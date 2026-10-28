@@ -103,8 +103,23 @@ assert_eq!(buffer.bit_len(), 32);
 Out-of-range indices panic. Finding a bit in an array, slice or `Vec` walks
 its elements, so it takes time linear in their number.
 
-Not yet available: fields that read or write any type at a bit offset
-([issue #1](https://github.com/ciresnave/bitman/issues/1)).
+A `Field` names a run of bits once and reads or writes it as an integer, on
+anything that implements `BitMan` (including arrays and `Vec`s):
+
+```rust
+use bitman::Field;
+
+let mut header = [0u8; 2];
+let version = Field::new(0, 4);      // first 4 bits
+let length = Field::new(4, 12);      // next 12 bits, across the byte boundary
+version.write(&mut header, 4u8);
+length.write(&mut header, 0x123u16);
+assert_eq!(header, [0x41, 0x23]);
+assert_eq!(length.read::<u16, _>(&header), 0x123);
+```
+
+Reading right-aligns the bits; writing stores the low bits of the value and
+leaves every other bit alone. A field that does not fit panics.
 
 Requirements: stable Rust 1.85 or newer (2.0.0 to 2.0.2 required nightly), and
 use 3.0.2 or newer (earlier versions return wrong conversion results).
@@ -119,4 +134,4 @@ We have added a git hook to kick off git cliff on every commit.  See .git/hooks/
 
 ## Roadmap
 
-See [ROADMAP.md](ROADMAP.md). Next: typed fields at a bit offset.
+See [ROADMAP.md](ROADMAP.md).

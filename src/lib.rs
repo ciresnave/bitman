@@ -14,6 +14,9 @@ pub use bit::*;
 mod bits;
 pub use bits::*;
 
+mod field;
+pub use field::*;
+
 #[cfg(test)]
 mod bitman_tests;
 
