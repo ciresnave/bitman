@@ -36,4 +36,4 @@ Open issues (decided 2026-10-25)
 
 Backlog
 -------
-- Typed fields at a bit offset (the 2.0 roadmap's "Field to get read()/write()" item, never implemented): `read::<T>(offset, len)` / `write(offset, value)` on any `BitMan`, converting via the existing `From<&Bits>`/`From<int> for Bits`. Design question: a `Field { offset, len }` value that can be defined once and reused, vs. plain methods on the trait.
+- (done in 3.2.0 as `Field`) Typed fields at a bit offset (the 2.0 roadmap's "Field to get read()/write()" item, never implemented): `read::<T>(offset, len)` / `write(offset, value)` on any `BitMan`, converting via the existing `From<&Bits>`/`From<int> for Bits`. Design question: a `Field { offset, len }` value that can be defined once and reused, vs. plain methods on the trait.

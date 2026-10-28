@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.2.0]
+
+### Added
+
+- `Field { offset, len }`: define a run of bits once, then `read::<T, _>(&value)` / `write(&mut value, v)` on any `BitMan` value (integers, `Bits`, arrays, slices, `Vec`s). Offsets count from the most significant bit; reads right-align; writes keep the low `len` bits and leave other bits untouched.
+
 ## [3.1.3]
 
 ### Documentation
