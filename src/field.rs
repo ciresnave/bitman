@@ -51,7 +51,9 @@ impl Field {
 
     fn check<B: BitMan + ?Sized>(&self, target: &B) {
         assert!(
-            self.offset + self.len <= target.bit_len(),
+            self.offset
+                .checked_add(self.len)
+                .is_some_and(|end| end <= target.bit_len()),
             "field of {} bits at offset {} does not fit in {} bits",
             self.len,
             self.offset,

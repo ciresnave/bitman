@@ -59,6 +59,19 @@ fn a_one_bit_field_matches_bit() {
     assert_eq!(value.bit(2), Bit(true));
 }
 
+#[test]
+#[should_panic(expected = "does not fit")]
+fn read_panics_when_offset_plus_len_overflows() {
+    let _: u8 = Field::new(usize::MAX, 1).read(&0u8);
+}
+
+#[test]
+#[should_panic(expected = "does not fit")]
+fn write_panics_when_offset_plus_len_overflows() {
+    let mut value = 0u8;
+    Field::new(usize::MAX, 2).write(&mut value, 1u8);
+}
+
 proptest! {
     #[test]
     fn write_then_read_round_trips(start in 0usize..32, len in 1usize..=32, seed: u64, v: u32) {
