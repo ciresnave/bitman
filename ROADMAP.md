@@ -25,9 +25,9 @@ BitMan Roadmap for v2.0
     - Add from_be_bytes_of_le_bits() to fill a Bits from big endian bytes & little endian bits (done!)
 - Split BitMan into separate modules for easier reading/testing (done!)
 - Add git cliff for automatic CHANGELOG.md generation (done!)
-- Add PropTest for property-based testing
-- Add Tarpaulin for test coverage monitoring
-- Add Criterion and Flamegraph for profiling
+- Add PropTest for property-based testing (done! tests/conversions.rs, tests/bitman_trait.rs)
+- Add Tarpaulin for test coverage monitoring (owner: bitman lane; not started, no blocker)
+- Add Criterion and Flamegraph for profiling (owner: bitman lane; not started; note `BitMan` on arrays is O(elements) per bit, a benchmark target)
 
 Open issues (decided 2026-10-25)
 --------------------------------

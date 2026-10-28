@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.1.3]
+
+### Documentation
+
+- ROADMAP: PropTest marked done; owners named for the coverage and profiling rows.
+
 ## [3.1.2]
 
 ### Documentation
