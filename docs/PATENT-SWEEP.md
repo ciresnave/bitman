@@ -1,4 +1,4 @@
-# Patent sweep: bitman 3.1.0 (covers 2.0.x to 3.1.x; first swept 2026-10-25 at `ffd3fe0`, refreshed 2026-10-26 at 3.1.0 / `7ba003c`)
+# Patent sweep: bitman 3.1.0 (covers 2.0.x to 3.2.x; first swept 2026-10-25 at `ffd3fe0`, refreshed 2026-10-26 at 3.1.0 / `7ba003c`)
 
 Date: 2026-10-25; Run by: bitman lane, Claude Sonnet 5.5; Method: AI-assisted search (web search restricted to patents.google.com) and claim read via `tools/patent-claims.py`; NOT legal advice; NOT a freedom-to-operate opinion.
 
@@ -10,6 +10,7 @@ Date: 2026-10-25; Run by: bitman lane, Claude Sonnet 5.5; Method: AI-assisted se
 5. Converting `Bits` to and from byte arrays in four variants (big/little byte order x big/little bit order).
 6. Macro generating `From` conversions between `Bits` and integer types.
 7. (added 3.1.0) A `BitMan` trait giving get-bit/set-bit/get-bits/set-bits by index on integers, and on arrays, slices and vectors of them treated as one contiguous bit sequence (index walks the elements).
+8. (added 3.2.0) A `Field` value type: an (offset, length) bit range defined once, read as a right-aligned integer and written from the low bits of an integer over any `BitMan` value.
 
 (Overlap-prone mechanisms only; the crate has no other mechanisms. It is a conventional bit-manipulation helper library.)
 
@@ -55,4 +56,4 @@ For hits 10-15 only independent claim 1 was read (full text for 1-9 as listed); 
 None found. No hit is `unread` (2026-10-26).
 
 ## Limitations
-Five queries total; search engine results, not an exhaustive patent-office search; machine-converted claim text; only US and some EP coverage; software-library ideas here are long-established prior art (language-level bit ops), which lowers risk but is not a clearance.
+Five queries total (idea 8 `Field` was covered by the existing bit-field accessor/extract-insert queries and hits 1, 2, 5, 15; no new query was run for it); search engine results, not an exhaustive patent-office search; machine-converted claim text; only US and some EP coverage; software-library ideas here are long-established prior art (language-level bit ops), which lowers risk but is not a clearance.
