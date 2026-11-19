@@ -49,3 +49,16 @@ jobs:
       - uses: actions/checkout@v4
       - run: cargo install cargo-audit --locked
       - run: cargo audit
+
+  # Coverage is reported, not gated: the number is in the job summary. Linux only; the job has not been
+  # run on Windows or macOS, so no claim is made for them.
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: rustup component add llvm-tools-preview
+      - run: cargo install cargo-llvm-cov --locked
+      - name: coverage summary
+        run: |
+          cargo llvm-cov --locked --summary-only | tee coverage.txt
+          { echo '```'; tail -n 8 coverage.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
