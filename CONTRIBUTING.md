@@ -45,6 +45,10 @@ possible.  Please try to keep that in mind when submitting code to our
 project.  Where possible, please ensure your code is covered thoroughly
 by tests that cover both all expected results and expected failures.
 
+## Benchmarks and profiling
+
+`cargo bench` runs the Criterion benchmarks in `benches/bitman.rs`. To profile one, install `cargo install flamegraph` and run `cargo flamegraph --bench bitman -- --bench <name>`; it needs `perf` on Linux or an elevated shell with ETW on Windows. Compare numbers only from the same machine and run.
+
 ## Guidelines for submissions
 
 ### Git Commit Message Guidelines

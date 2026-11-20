@@ -23,4 +23,9 @@
     num-traits = "0.2"
 
 [dev-dependencies]
+criterion = "0.7.0"
     proptest = "1"
+
+[[bench]]
+    harness = false
+    name    = "bitman"
