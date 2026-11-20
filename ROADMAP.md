@@ -26,7 +26,7 @@ BitMan Roadmap for v2.0
 - Split BitMan into separate modules for easier reading/testing (done!)
 - Add git cliff for automatic CHANGELOG.md generation (done!)
 - Add PropTest for property-based testing (done! tests/conversions.rs, tests/bitman_trait.rs)
-- Add Tarpaulin for test coverage monitoring (owner: bitman lane; not started, no blocker)
+- Add test coverage monitoring (done 2026-11-19, `coverage` job in verify.yml, Linux only). Tool: cargo-llvm-cov, not Tarpaulin (pm-ants 2026-11-19: the goal is coverage monitoring, not the brand; llvm-cov runs on Windows/macOS/Linux and is installed here). Baseline at cf2c350: 67.2% lines (bits.rs 47%, bit.rs 85%, field.rs 100%, lib.rs 98%). Next: tests for bits.rs.
 - Add Criterion and Flamegraph for profiling (owner: bitman lane; not started; note `BitMan` on arrays is O(elements) per bit, a benchmark target)
 
 Open issues (decided 2026-10-25)
