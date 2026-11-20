@@ -1,4 +1,4 @@
-# Patent sweep: bitman 3.1.0 (covers 2.0.x to 3.2.x; first swept 2026-10-25 at `ffd3fe0`, refreshed 2026-10-26 at 3.1.0 / `7ba003c`)
+# Patent sweep: bitman 3.2.0 (covers 2.0.x to 3.2.x; first swept 2026-10-25 at `ffd3fe0`, refreshed 2026-10-26 at 3.1.0 / `7ba003c`, re-swept 2026-11-20 for `Field` at 3.2.0 / `cf2c350`)
 
 Date: 2026-10-25; Run by: bitman lane, Claude Sonnet 5.5; Method: AI-assisted search (web search restricted to patents.google.com) and claim read via `tools/patent-claims.py`; NOT legal advice; NOT a freedom-to-operate opinion.
 
@@ -47,13 +47,29 @@ For hits 10-15 only independent claim 1 was read (full text for 1-9 as listed); 
 ## Queries added 2026-10-26 (idea 7)
 - "patent addressing individual bits across array of words as single contiguous bit sequence get bit set bit index software"
 
+## Queries added 2026-11-20 (idea 8, `Field`; Google Patents via web search)
+- "patent reusable bit field descriptor offset length read write value in integer or byte array software accessor"
+- "patent typed field definition start bit width extract right-aligned value insert preserving other bits across byte array"
+
 ## Second-pass queries (2026-10-25)
 - "bit array data structure set of bits vector of booleans operations shift and or patent claim software" (bit sets/arrays)
 - "patent compile-time specialization default implementation overridden trait dispatch generic programming type-specific method selection" (specialization dispatch)
 - "patent extracting and inserting bit field from integer using mask and shift software library bit-field accessor" (bit-field manipulation)
 
+## Hits added 2026-11-20 (idea 8)
+| # | patent | title | assignee | status | claim(s) read | overlap | our difference | verdict |
+|---|---|---|---|---|---|---|---|---|
+| 20 | US20130326201A1 | Processor-based apparatus and method for processing bit streams | Intel | ACTIVE (est. 2033) | 1-4 (claim text truncated after claim 4) | get bits by start bit address and bit count, then operate | claim 1 is executing a processor instruction that identifies start bit address and count and retrieves from a bit-oriented register or cache; we are a software library, no instruction, register or cache | clear (hardware/ISA claim); later claims unread |
+| 21 | WO2001084456A1 | Bit-map parsing using a COBOL algorithm | Mastercard | ceased | 1-3 | extracting data from bit-map messages | claims numeric-value-per-bit-map conversion table to byte-maps for ISO 8583 presence tests; we have no table or message parsing | clear |
+| 22 | US7068192B1 | Encoding and decoding variable-length data | Google | expired | 1-7 | fields in a contiguous space | claims a tag field giving storage lengths of N data fields; we have no length tag | clear |
+| 23 | US20050204117A1 | Inserting bits within a data word | ARM | expired | 1 | insert bits leaving others unaltered | claims a processor shift-and-insert instruction and decoder | clear |
+| 24 | US20070124631A1 | Bit field selection instruction | AMD | abandoned | 1-5 | extract N-bit field at an offset | claims a processor instruction over two source operands | clear |
+| 25 | US7447871B2 | Data access program instruction encoding | ARM | expired | 1 | offset field | address-offset encoding in processor instructions | clear |
+
+Also surfaced and already assessed: US6938241B1 (row 1), US9207937B2 (row 2), US7370180B2 (row 15), EP0715252A1 / US6081869A (row 9), US4467443A (row 19), US20020120828A1 (the Nortel/Avaya family of row 5). Rows 20-25: only independent claim 1 read in full except where stated; dependent claims unread.
+
 ## Needs review (to the PM)
-None found. No hit is `unread` (2026-10-26).
+None found. Row 20 (Intel, ACTIVE) has unread later claims; its claim 1 is a processor instruction, which a software library does not practice. (2026-11-20)
 
 ## Limitations
-Five queries total (idea 8 `Field` was covered by the existing bit-field accessor/extract-insert queries and hits 1, 2, 5, 15; no new query was run for it); search engine results, not an exhaustive patent-office search; machine-converted claim text; only US and some EP coverage; software-library ideas here are long-established prior art (language-level bit ops), which lowers risk but is not a clearance.
+Eight queries total (six through 2026-10-26, two added 2026-11-20 for `Field`); search engine results, not an exhaustive patent-office search; machine-converted claim text; only US and some EP coverage; software-library ideas here are long-established prior art (language-level bit ops), which lowers risk but is not a clearance.
