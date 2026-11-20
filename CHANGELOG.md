@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.2.1]
+
+### Documentation
+
+- Field re-sweep added to `docs/PATENT-SWEEP.md`; ROADMAP updated.
+
+### CI
+
+- Report-only `llvm-cov` coverage job (Linux).
+
 ## [3.2.0]
 
 ### Added
