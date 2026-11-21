@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Breaking
+
+- `!Bits` now inverts every bit; before it returned its input unchanged. Affects 3.2.1 and every earlier release.
+- `Bits >> n` (both `usize` and `u32`) now shifts toward the least significant end and fills the front with zeros; before it shifted the same way as `<<`. Affects the same releases.
+
+### Changed
+
+- `Bits << n` and `Bits >> n` with `n` at or above the length now give all zeros of the same length instead of panicking.
+
+### Added
+
+- Tests for the `Bits` operators.
+
 ## [3.2.2]
 
 ### Changed

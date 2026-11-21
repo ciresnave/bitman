@@ -68,3 +68,49 @@ fn zero_and_is_zero() {
 fn display_lists_the_bits() {
     assert_eq!(format!("{}", bits("10")), "Bits( Bit(true) Bit(false))");
 }
+
+#[test]
+fn shifting_by_zero_changes_nothing() {
+    assert_eq!(text(&(bits("1011") << 0usize)), "1011");
+    assert_eq!(text(&(bits("1011") >> 0usize)), "1011");
+    assert_eq!(text(&(bits("1011") << 0u32)), "1011");
+    assert_eq!(text(&(bits("1011") >> 0u32)), "1011");
+}
+
+#[test]
+fn shifting_by_the_width_or_more_gives_all_zeros_of_the_same_length() {
+    for n in [4usize, 5, 100] {
+        assert_eq!(text(&(bits("1011") << n)), "0000");
+        assert_eq!(text(&(bits("1011") >> n)), "0000");
+    }
+    assert_eq!(text(&(bits("1011") << 4u32)), "0000");
+    assert_eq!(text(&(bits("1011") >> 4u32)), "0000");
+}
+
+#[test]
+fn shifts_agree_with_the_integer_shifts() {
+    for v in [0u8, 1, 0b1011_0100, 0xFF] {
+        for n in 0..8usize {
+            assert_eq!(Bits::from(v << n), Bits::from(v) << n, "<< {n} of {v:#b}");
+            assert_eq!(Bits::from(v >> n), Bits::from(v) >> n, ">> {n} of {v:#b}");
+        }
+    }
+}
+
+/// Pins today's behaviour for operands of different lengths: the plain operators stop at the
+/// shorter one, while the assigning forms only touch the overlap and leave the rest alone.
+#[test]
+fn unequal_lengths_current_behaviour() {
+    assert_eq!(text(&(bits("1111") & bits("10"))), "10");
+    assert_eq!(text(&(bits("1111") | bits("00"))), "11");
+    assert_eq!(text(&(bits("1111") ^ bits("11"))), "00");
+    let mut a = bits("1111");
+    a &= bits("10");
+    assert_eq!(text(&a), "1011");
+    let mut o = bits("0000");
+    o |= bits("11");
+    assert_eq!(text(&o), "1100");
+    let mut x = bits("1111");
+    x ^= bits("11");
+    assert_eq!(text(&x), "0011");
+}

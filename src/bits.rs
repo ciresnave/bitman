@@ -297,10 +297,9 @@ impl Shl<usize> for Bits {
 
     #[inline]
     fn shl(mut self, rhs: usize) -> Self {
-        drop(self.drain(..rhs));
-        for _ in 0..rhs {
-            self.push(Bit(false));
-        }
+        let rhs = rhs.min(self.inner.len());
+        drop(self.inner.drain(..rhs));
+        self.inner.extend(core::iter::repeat_n(Bit(false), rhs));
         self
     }
 }
@@ -309,12 +308,8 @@ impl Shl<u32> for Bits {
     type Output = Self;
 
     #[inline]
-    fn shl(mut self, rhs: u32) -> Self {
-        drop(self.drain(..rhs as usize));
-        for _ in 0..rhs {
-            self.push(Bit(false));
-        }
-        self
+    fn shl(self, rhs: u32) -> Self {
+        self << rhs as usize
     }
 }
 
