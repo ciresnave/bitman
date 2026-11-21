@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.2.2]
+
+### Changed
+
+- Criterion benchmarks for BitMan, Field and Bits (dev-dependency criterion 0.7.0); flamegraph how-to; ROADMAP numbers. No library code change.
+
 ## [3.2.1]
 
 ### Documentation
