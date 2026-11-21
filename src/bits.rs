@@ -362,8 +362,9 @@ impl Zero for Bits {
 impl One for Bits {
     #[inline]
     fn one() -> Self {
-        let mut output = Self::new(&vec![Bit(false); size_of::<Self>() * 8]);
-        output.set_bit(size_of::<Self>() * 7, Bit(true));
+        let width = size_of::<Self>() * 8;
+        let mut output = Self::new(&vec![Bit(false); width]);
+        output.set_bit(width - 1, Bit(true));
         output
     }
 
@@ -372,13 +373,11 @@ impl One for Bits {
     where
         Self: PartialEq,
     {
-        (self
-            .get(0..self.inner.len() - 1)
-            .unwrap()
-            .iter()
-            .all(|&x| !x.0)
-            || self.inner.len() == 1)
-            && self.get(self.inner.len()).unwrap().0
+        // The value 1: only the least significant (last) bit is set.
+        match self.inner.split_last() {
+            Some((last, rest)) => last.0 && rest.iter().all(|bit| !bit.0),
+            None => false,
+        }
     }
 }
 

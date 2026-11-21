@@ -9,6 +9,8 @@ All notable changes to this project will be documented in this file.
 - `!Bits` now inverts every bit; before it returned its input unchanged. Affects 3.2.1 and every earlier release.
 - `Bits >> n` (both `usize` and `u32`) now shifts toward the least significant end and fills the front with zeros; before it shifted the same way as `<<`. Affects the same releases.
 
+- `Bits::is_one()` no longer panics (it indexed one past the end) and now means "only the last bit is set" for any non-empty length; `Bits::one()` now sets the last bit of its 192 bits (it set bit 168, so `one().is_one()` was false). Affects 3.2.1 and earlier.
+
 ### Changed
 
 - `Bits << n` and `Bits >> n` with `n` at or above the length now give all zeros of the same length instead of panicking.
