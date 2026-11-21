@@ -27,7 +27,7 @@ BitMan Roadmap for v2.0
 - Add git cliff for automatic CHANGELOG.md generation (done!)
 - Add PropTest for property-based testing (done! tests/conversions.rs, tests/bitman_trait.rs)
 - Add test coverage monitoring (done 2026-11-19, `coverage` job in verify.yml, Linux only). Tool: cargo-llvm-cov, not Tarpaulin (pm-ants 2026-11-19: the goal is coverage monitoring, not the brand; llvm-cov runs on Windows/macOS/Linux and is installed here). Baseline at cf2c350: 67.2% lines (bits.rs 47%, bit.rs 85%, field.rs 100%, lib.rs 98%). Next: tests for bits.rs.
-- Add Criterion and Flamegraph for profiling (owner: bitman lane; not started; note `BitMan` on arrays is O(elements) per bit, a benchmark target)
+- Add Criterion and Flamegraph for profiling (done 2026-11-20: `benches/bitman.rs`, `cargo bench`; flamegraph via `cargo flamegraph`, documented in CONTRIBUTING.md, not a dependency). First numbers (this box, release, one run): array bit lookup is linear in elements as predicted (last bit: 1.5 ns at 1 byte, 18 ns at 16, 314 ns at 256, 4.6 us at 4096); `Field::write` u32 is ~540 ns and `read` ~160 ns, both slow because they go through `Bits`; `u64::bits()` ~160 ns. Candidate work: O(1) element lookup for fixed-width arrays, direct shift/mask in `Field`.
 
 Open issues (decided 2026-10-25)
 --------------------------------

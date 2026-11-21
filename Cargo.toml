@@ -10,7 +10,7 @@
     readme        = "README.md"
     rust-version  = "1.85"
     repository    = "https://github.com/ciresnave/bitman"
-    version       = "3.2.1"
+    version       = "3.2.2"
 
     # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -23,4 +23,9 @@
     num-traits = "0.2"
 
 [dev-dependencies]
+criterion = "0.7.0"
     proptest = "1"
+
+[[bench]]
+    harness = false
+    name    = "bitman"
