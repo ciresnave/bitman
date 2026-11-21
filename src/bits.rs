@@ -278,15 +278,9 @@ impl Not for Bits {
 
     #[inline]
     fn not(self) -> Self::Output {
-        let mut new_bits = Self { inner: Vec::new() };
-        for index in 0..self.len() {
-            if self.get(index).unwrap().0 {
-                new_bits.push(Bit(true));
-            } else {
-                new_bits.push(Bit(false));
-            }
+        Self {
+            inner: self.inner.into_iter().map(|bit| !bit).collect(),
         }
-        new_bits
     }
 }
 
@@ -329,10 +323,11 @@ impl Shr<usize> for Bits {
 
     #[inline]
     fn shr(mut self, rhs: usize) -> Self::Output {
-        drop(self.inner.drain(..rhs));
-        for _ in 0..rhs {
-            self.inner.push(Bit(false));
-        }
+        let rhs = rhs.min(self.inner.len());
+        let kept = self.inner.len().saturating_sub(rhs);
+        self.inner.truncate(kept);
+        self.inner
+            .splice(0..0, core::iter::repeat_n(Bit(false), rhs));
         self
     }
 }
@@ -341,12 +336,8 @@ impl Shr<u32> for Bits {
     type Output = Self;
 
     #[inline]
-    fn shr(mut self, rhs: u32) -> Self::Output {
-        drop(self.inner.drain(..rhs as usize));
-        for _ in 0..rhs {
-            self.inner.push(Bit(false));
-        }
-        self
+    fn shr(self, rhs: u32) -> Self::Output {
+        self >> rhs as usize
     }
 }
 
